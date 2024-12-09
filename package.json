@@ -1,0 +1,16 @@
+{
+  "name": "api-backend-pweb",
+  "version": "1.0.0",
+  "description": "Este projeto consiste no desenvolvimento de uma API backend para um sistema de loja virtual de vestuário, como parte da disciplina *Princípios de Desenvolvimento Web*. O objetivo é criar um sistema funcional e bem documentado, seguindo boas práticas de desenvolvimento de software e utilizando tecnologias modernas.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
