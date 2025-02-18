@@ -33,6 +33,15 @@ class UserController {
     }
   }
 
+  async getAllUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const users = await this.userService.getAllUsers();
+      res.status(200).json(users);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async updateUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;

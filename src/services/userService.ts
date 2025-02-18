@@ -8,23 +8,27 @@ class UserService {
     this.userRepository = new UserRepository();
   }
 
-  async createUser(name: string, email: string, password: string, admin: boolean) {
+  async createUser(name: string, email: string, password: string, admin: boolean): Promise<User>  {
     const user = new User(name, email, password, admin);
 
     return await this.userRepository.createUser(user);
   }
 
-  async getUser(id: string) {
+  async getUser(id: string): Promise<User>  {
     return await this.userRepository.getUser(id);
   }
 
-  async updateUser(id: string, name: string, email: string, password: string, admin: boolean) {
+  async getAllUsers(): Promise<User[]>  {
+    return await this.userRepository.getAllUsers();
+  }
+
+  async updateUser(id: string, name: string, email: string, password: string, admin: boolean): Promise<User> {
     const userChanges = new User(name, email, password, admin);
 
     return await this.userRepository.updateUser(id, userChanges);
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(id: string): Promise<void>  {
     return await this.userRepository.deleteUser(id);
   }
 }

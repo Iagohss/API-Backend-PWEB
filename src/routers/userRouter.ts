@@ -114,6 +114,51 @@ router.get('/:id', (req, res, next) => {
 
 /**
  * @swagger
+ * /users:
+ *   get:
+ *     summary: Retorna a lista de todos os usuários
+ *     tags: [Usuários]
+ *     responses:
+ *       200:
+ *         description: Lista de usuários retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     format: uuid
+ *                   name:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   password:
+ *                     type: string
+ *                   admin:
+ *                     type: boolean
+ *             example:
+ *               - id: "a73c85b6-ac1b-4603-93bf-27e8ea205c48"
+ *                 name: "Jon Doe"
+ *                 email: "jondoe@email.com"
+ *                 password: "123"
+ *                 admin: false
+ *               - id: "b45d12c7-ef3d-4908-82cd-12f5ea03c7a9"
+ *                 name: "Jane Doe"
+ *                 email: "janedoe@email.com"
+ *                 password: "456"
+ *                 admin: true
+ */
+router.get('/', (req, res, next) => {
+  UserController.getAllUsers(req, res, next);
+  return;
+});
+
+
+/**
+ * @swagger
  * /users/{id}:
  *   put:
  *     summary: Atualiza um usuário existente

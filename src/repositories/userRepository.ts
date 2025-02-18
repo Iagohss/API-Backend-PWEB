@@ -2,7 +2,7 @@ import { User } from "../models/user";
 import prisma from "../utils/prisma";
 
 class UserRepository {
-  async createUser(user: User) {
+  async createUser(user: User): Promise<User> {
     try {
       const newUser = await prisma.user.create({
         data: { 
@@ -18,7 +18,7 @@ class UserRepository {
     }
   }
 
-  async getUser(id: string) {
+  async getUser(id: string): Promise<User> {
     try {
       const user = await prisma.user.findUnique({
         where: { id: id },
@@ -34,9 +34,13 @@ class UserRepository {
     }
   }
 
-  async updateUser(id: string, user: User): Promise<void> {
+  async getAllUsers(): Promise<User[]> {
+    return prisma.user.findMany();
+  }
+
+  async updateUser(id: string, user: User): Promise<User> {
     try {
-      await prisma.user.update({
+      return await prisma.user.update({
         where: {
           id: id,
         },
