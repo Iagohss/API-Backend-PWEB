@@ -31,9 +31,36 @@ export const router = express();
  *                 type: string
  *               admin:
  *                 type: boolean
+ *           example:
+ *             name: "Jon Doe"
+ *             email: "jondoe@email.com"
+ *             password: "123"
+ *             admin: false
  *     responses:
  *       201:
  *         description: Usuário criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                 name:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 password:
+ *                   type: string
+ *                 admin:
+ *                   type: boolean
+ *             example:
+ *               id: "a73c85b6"
+ *               name: "Jon Doe"
+ *               email: "jondoe@email.com"
+ *               password: "123"
+ *               admin: false
  *       400:
  *         description: Erro na criação do usuário
  */
@@ -55,11 +82,33 @@ router.post('/', (req, res, next) => UserController.createUser(req, res, next));
  *     responses:
  *       200:
  *         description: Usuário encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                 name:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 password:
+ *                   type: string
+ *                 admin:
+ *                   type: boolean
+ *             example:
+ *               id: "a73c85b6"
+ *               name: "Jon Doe"
+ *               email: "jondoe@email.com"
+ *               password: "123"
+ *               admin: false
  *       404:
  *         description: Usuário não encontrado
  */
 router.get('/:id', (req, res, next) => {
-  UserController.getUser(req, res, next)
+  UserController.getUser(req, res, next);
   return;
 });
 
@@ -90,6 +139,11 @@ router.get('/:id', (req, res, next) => {
  *                 type: string
  *               admin:
  *                 type: boolean
+ *           example:
+ *             name: "Jon Doe"
+ *             email: "jondoe@email.com"
+ *             password: "123"
+ *             admin: false
  *     responses:
  *       200:
  *         description: Usuário atualizado com sucesso
