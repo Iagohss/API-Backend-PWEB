@@ -15,3 +15,12 @@ model User {
   password  String
   admin     Boolean
 }
+
+model Product {
+  id        String  @id @default(uuid())
+  tipo      String
+  caimento  String
+  material  String
+  tamanho   String
+  preco     Float
+}
