@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import ProductService from '../services/productService';
+import { ProductDTO } from '../dtos/productDTO';
 
 const productService = new ProductService();
 
 class ProductController {
     async createProduct(req: Request, res: Response, next: NextFunction) {
         try {
-            const { tipo, caimento, material, tamanho, preco } = req.body;
-            const product = await productService.createProduct(tipo, caimento, material, tamanho, preco);
+            const productDTO: ProductDTO = req.body;
+            const product = await productService.createProduct(productDTO);
             res.status(201).json(product);
         } catch (error) {
             next(error);

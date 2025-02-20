@@ -6,13 +6,7 @@ const prisma = new PrismaClient();
 class ProductRepository {
     async createProduct(product: Product): Promise<Product> {
         return prisma.product.create({
-            data: {
-                tipo: product.tipo,
-                caimento: product.caimento,
-                material: product.material,
-                tamanho: product.tamanho,
-                preco: product.preco
-            }
+            data: product
         });
     }
 

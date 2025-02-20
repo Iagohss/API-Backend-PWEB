@@ -1,3 +1,4 @@
+import { ProductDTO } from '../dtos/productDTO';
 import { Product } from '../models/product';
 import ProductRepository from '../repositories/productRepository';
 
@@ -8,8 +9,15 @@ class ProductService {
         this.productRepository = new ProductRepository();
     }
 
-    async createProduct(tipo: string, caimento: string, material: string, tamanho: string, preco: number): Promise<Product> {
-        const product = new Product(tipo, caimento, material, tamanho, preco);
+    async createProduct(productDTO : ProductDTO) : Promise<Product> {
+        const product = new Product(
+          productDTO.tipo, 
+          productDTO.nome,
+          productDTO.caimento, 
+          productDTO.material, 
+          productDTO.tamanho, 
+          productDTO.preco
+        );
         return await this.productRepository.createProduct(product);
     }
 
