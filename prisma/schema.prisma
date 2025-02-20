@@ -18,9 +18,28 @@ model User {
 
 model Product {
   id        String  @id @default(uuid())
+  nome      String  @unique
   tipo      String
-  caimento  String
+  caimento  Caimento
   material  String
-  tamanho   String
+  tamanho   Tamanho
   preco     Float
+}
+
+enum Caimento {
+  Fit
+  Slim
+  SlimFit
+  Regular
+  Oversized
+  Baggy
+  Reta
+}
+
+enum Tamanho {
+  PP
+  P
+  M
+  G
+  GG
 }

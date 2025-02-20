@@ -1,14 +1,18 @@
+import { Caimento, Tamanho } from '@prisma/client';
+
 export class Product {
     id: string;
+    nome: string;
     tipo: string;
-    caimento: string;
+    caimento: Caimento;
     material: string;
-    tamanho: string;
+    tamanho: Tamanho;
     preco: number;
 
-    constructor(tipo: string, caimento: string, material: string, tamanho: string, preco: number) {
+    constructor(tipo: string, nome: string, caimento: Caimento, material: string, tamanho: Tamanho, preco: number) {
         this.id = "";
         this.tipo = tipo;
+        this.nome = nome;
         this.caimento = caimento;
         this.material = material;
         this.tamanho = tamanho;
