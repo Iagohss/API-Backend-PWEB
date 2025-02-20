@@ -1,3 +1,4 @@
+import { UserDTO } from '../dtos/userDTO';
 import { User } from '../models/user';
 import UserRepository from '../repositories/userRepository';
 
@@ -8,9 +9,13 @@ class UserService {
     this.userRepository = new UserRepository();
   }
 
-  async createUser(name: string, email: string, password: string, admin: boolean): Promise<User>  {
-    const user = new User(name, email, password, admin);
-
+  async createUser(userDTO : UserDTO ): Promise<User>  {
+    const user = new User(
+      userDTO.name, 
+      userDTO.email, 
+      userDTO.password, 
+      userDTO.admin
+    );
     return await this.userRepository.createUser(user);
   }
 

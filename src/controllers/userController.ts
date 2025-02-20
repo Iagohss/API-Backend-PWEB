@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import UserService from "../services/userService";
+import { UserDTO } from "../dtos/userDTO";
 
 class UserController {
   private userService: UserService;
@@ -10,8 +11,8 @@ class UserController {
 
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, email, password, admin } = req.body;
-      const user = await this.userService.createUser(name, email, password, admin);
+      const userDTO: UserDTO = req.body;
+      const user = await this.userService.createUser( userDTO );
       res.status(201).json(user);
     } catch (error) {
       next(error);

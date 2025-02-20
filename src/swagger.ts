@@ -1,6 +1,7 @@
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { Express } from "express";
+import { swaggerSchemas } from "./swaggerSchemas";
 
 const options = {
   definition: {
@@ -15,8 +16,9 @@ const options = {
         url: "http://localhost:3000/api",
       },
     ],
+    ...swaggerSchemas, 
   },
-  apis: ["./src/routers/*.ts", "./src/controllers/*.ts"],
+  apis: ["./src/routers/*.ts"],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

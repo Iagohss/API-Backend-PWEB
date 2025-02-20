@@ -21,48 +21,14 @@ export const router = express();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               admin:
- *                 type: boolean
- *           example:
- *             name: "Jon Doe"
- *             email: "jondoe@email.com"
- *             password: "123"
- *             admin: false
+ *             $ref: '#/components/schemas/UserDTO'
  *     responses:
  *       201:
  *         description: Usuário criado com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   format: uuid
- *                 name:
- *                   type: string
- *                 email:
- *                   type: string
- *                 password:
- *                   type: string
- *                 admin:
- *                   type: boolean
- *             example:
- *               id: "a73c85b6"
- *               name: "Jon Doe"
- *               email: "jondoe@email.com"
- *               password: "123"
- *               admin: false
- *       400:
- *         description: Erro na criação do usuário
+ *               $ref: '#/components/schemas/UserResponse'
  */
 router.post('/', (req, res, next) => UserController.createUser(req, res, next));
 
@@ -85,25 +51,7 @@ router.post('/', (req, res, next) => UserController.createUser(req, res, next));
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   format: uuid
- *                 name:
- *                   type: string
- *                 email:
- *                   type: string
- *                 password:
- *                   type: string
- *                 admin:
- *                   type: boolean
- *             example:
- *               id: "a73c85b6"
- *               name: "Jon Doe"
- *               email: "jondoe@email.com"
- *               password: "123"
- *               admin: false
+ *               $ref: '#/components/schemas/UserResponse'
  *       404:
  *         description: Usuário não encontrado
  */
@@ -126,36 +74,12 @@ router.get('/:id', (req, res, next) => {
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                     format: uuid
- *                   name:
- *                     type: string
- *                   email:
- *                     type: string
- *                   password:
- *                     type: string
- *                   admin:
- *                     type: boolean
- *             example:
- *               - id: "a73c85b6-ac1b-4603-93bf-27e8ea205c48"
- *                 name: "Jon Doe"
- *                 email: "jondoe@email.com"
- *                 password: "123"
- *                 admin: false
- *               - id: "b45d12c7-ef3d-4908-82cd-12f5ea03c7a9"
- *                 name: "Jane Doe"
- *                 email: "janedoe@email.com"
- *                 password: "456"
- *                 admin: true
+ *                 $ref: '#/components/schemas/UserResponse'
  */
 router.get('/', (req, res, next) => {
   UserController.getAllUsers(req, res, next);
   return;
 });
-
 
 /**
  * @swagger
@@ -174,24 +98,14 @@ router.get('/', (req, res, next) => {
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               admin:
- *                 type: boolean
- *           example:
- *             name: "Jon Doe"
- *             email: "jondoe@email.com"
- *             password: "123"
- *             admin: false
+ *             $ref: '#/components/schemas/UserDTO'
  *     responses:
  *       200:
  *         description: Usuário atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserResponse'
  *       404:
  *         description: Usuário não encontrado
  */

@@ -5,25 +5,9 @@ const router = express.Router();
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     ProductDTO:
- *       type: object
- *       properties:
- *         nome:
- *           type: string
- *         tipo:
- *           type: string
- *         caimento:
- *           type: string
- *           enum: [Fit, Slim, SlimFit, Regular, Oversized, Baggy, Reta]
- *         material:
- *           type: string
- *         tamanho:
- *           type: string
- *           enum: [PP, P, M, G, GG]
- *         preco:
- *           type: number
+ * tags:
+ *   name: Produtos
+ *   description: Endpoints para gerenciamento de produtos
  */
 
 /**
