@@ -12,46 +12,109 @@ const router = express.Router();
 
 /**
  * @swagger
- * /carts:
+ * /api/carts/{userId}:
  *   post:
- *     summary: Cria um novo carrinho para um usuário
+ *     summary: Gera um novo carrinho vazio para um usuário
  *     tags: [Carrinhos]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do usuário
+ *     responses:
+ *       201:
+ *         description: Carrinho criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CartResponse'
  */
-router.post('/', (req, res, next) => CartController.createCart(req, res, next));
+router.post('/:userId', (req, res, next) => CartController.createCart(req, res, next));
 
 /**
  * @swagger
- * /carts/{id}:
+ * /api/carts/{id}:
  *   get:
  *     summary: Busca um carrinho pelo ID
  *     tags: [Carrinhos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do carrinho
+ *     responses:
+ *       200:
+ *         description: Carrinho retornado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CartResponse'
  */
 router.get('/:id', (req, res, next) => CartController.getCartById(req, res, next));
 
 /**
  * @swagger
- * /carts/user/{userId}:
+ * /api/carts/user/{userId}:
  *   get:
- *     summary: Busca o carrinho aberto de um usuário
+ *     summary: Busca o carrinho aberto de um usuário pelo seu ID
  *     tags: [Carrinhos]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Carrinho retornado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CartResponse'
  */
 router.get('/user/:userId', (req, res, next) => CartController.getOpenCartByUser(req, res, next));
 
 /**
  * @swagger
- * /carts/{id}/close:
+ * /api/carts/close/{id}:
  *   put:
  *     summary: Fecha um carrinho
  *     tags: [Carrinhos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Carrinho fechado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CartResponse'
  */
-router.put('/:id/close', (req, res, next) => CartController.closeCart(req, res, next));
+router.put('/close/:id', (req, res, next) => CartController.closeCart(req, res, next));
 
 /**
  * @swagger
- * /carts/{id}:
+ * /api/carts/{id}:
  *   delete:
- *     summary: Deleta um carrinho
+ *     summary: deleta um carrinho
  *     tags: [Carrinhos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: Carrinho deletado com sucesso
  */
 router.delete('/:id', (req, res, next) => CartController.deleteCart(req, res, next));
 

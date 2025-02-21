@@ -1,11 +1,15 @@
 import { PrismaClient } from '@prisma/client';
 import prisma from '../utils/prisma';
+import { Cart } from '../models/cart'
 
 class CartRepository {
-    async createCart(data: { userId: string; isOpen: boolean }) {
+    async createCart(cart: Cart) {
         try {
             return await prisma.cart.create({
-                data,
+                data: {
+                  userId: cart.userId,
+                  isOpen: cart.isOpen,
+                },
             });
         } catch (error) {
             throw new Error('Erro ao criar o carrinho.');

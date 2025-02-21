@@ -6,7 +6,7 @@ const cartService = new CartService();
 class CartController {
     async createCart(req: Request, res: Response, next: NextFunction) {
         try {
-            const { userId } = req.body;
+          const { userId } = req.params;
             const cart = await cartService.createCart(userId);
             res.status(201).json(cart);
         } catch (error) {

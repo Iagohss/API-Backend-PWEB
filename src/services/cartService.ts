@@ -16,11 +16,7 @@ class CartService {
             throw new Error("Usuário já possui um carrinho aberto.");
         }
     
-        const cart = {
-            userId,
-            isOpen: true,
-        };
-    
+        const cart: Cart = new Cart(userId);
         return await this.cartRepository.createCart(cart);
     }    
 

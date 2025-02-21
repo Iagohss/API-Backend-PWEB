@@ -60,6 +60,19 @@ export const swaggerSchemas = {
           preco: 49.99,
         },
       },
+      CartResponse: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          userId: { type: "string", format: "uuid" },
+          isOpen: { type: "boolean" },
+        },
+        example: {
+          id: "a7wsadsa-ac1b-460o3-9dfbf-27e8efdsdf48",
+          userId: "a73c85b6-ac1b-4603-93bf-27e8ea205c48",
+          isOpen: false,
+        },
+      },
     },
   },
 };
