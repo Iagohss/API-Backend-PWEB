@@ -59,7 +59,6 @@ model Cart {
 }
 
 model CartProduct {
-  id        String  @id @default(uuid())
   cartId    String
   productId String
   quantidade Int
