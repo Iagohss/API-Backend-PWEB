@@ -27,6 +27,15 @@ class CartController {
         }
     }
 
+    async getAllCarts(req: Request, res: Response, next: NextFunction) {
+        try {
+            const products = await cartService.getAllCarts();
+            res.json(products);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getOpenCartByUser(req: Request, res: Response, next: NextFunction) {
         try {
             const { userId } = req.params;
@@ -57,6 +66,26 @@ class CartController {
         } catch (error) {
             next(error);
         }
+    }
+
+    async addProductToCart(req: Request, res: Response, next: NextFunction) {
+      try {
+          const { cartId, productId, quantidade } = req.body;
+          const cart = await cartService.addProductToCart(cartId, productId, quantidade);
+          res.status(200).json(cart);
+      } catch (error) {
+          next(error);
+      }
+    } 
+
+    async rmvProductFromCart(req: Request, res: Response, next: NextFunction) {
+      try {
+          const { cartId, productId, quantidade } = req.body; 
+          const cart = await cartService.rmvProductFromCart(cartId, productId, quantidade);
+          res.status(200).json(cart);
+      } catch (error) {
+          next(error);
+      }
     }
 }
 

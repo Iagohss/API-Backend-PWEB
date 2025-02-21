@@ -1,5 +1,6 @@
 import express from 'express';
 import CartController from '../controllers/cartController';
+import cartController from '../controllers/cartController';
 
 const router = express.Router();
 
@@ -32,6 +33,24 @@ const router = express.Router();
  *               $ref: '#/components/schemas/CartResponse'
  */
 router.post('/:userId', (req, res, next) => CartController.createCart(req, res, next));
+
+/**
+ * @swagger
+ * /api/carts:
+ *   get:
+ *     summary: Retorna todos os carrinhos
+ *     tags: [Carrinhos]
+ *     responses:
+ *       200:
+ *         description: Lista de carrinhos retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/CartResponse'
+ */
+router.get('/', (req, res, next) => cartController.getAllCarts(req, res, next));
 
 /**
  * @swagger
@@ -117,5 +136,61 @@ router.put('/close/:id', (req, res, next) => CartController.closeCart(req, res, 
  *         description: Carrinho deletado com sucesso
  */
 router.delete('/:id', (req, res, next) => CartController.deleteCart(req, res, next));
+
+/**
+ * @swagger
+ * /api/carts/product/add:
+ *   put:
+ *     summary: Adiciona produtos ao carrinho
+ *     tags: [Carrinhos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cartId:
+ *                 type: string
+ *                 example: "e0dee3e3-1054-4dfc-b5e4-a05244570b11"
+ *               productId:
+ *                 type: string
+ *                 example: "596672c3-2f23-4c91-85ea-681c8a21ebcd"
+ *               quantidade:
+ *                 type: number
+ *                 example: 15
+ *     responses:
+ *       200:
+ *         description: Produto adicionado ao carrinho com sucesso
+ */
+router.put('/product/add', (req, res, next) => CartController.addProductToCart(req, res, next));
+
+/**
+ * @swagger
+ * /api/carts/product/rmv:
+ *   delete:
+ *     summary: Remove produtos do carrinho
+ *     tags: [Carrinhos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cartId:
+ *                 type: string
+ *                 example: "e0dee3e3-1054-4dfc-b5e4-a05244570b11"
+ *               productId:
+ *                 type: string
+ *                 example: "596672c3-2f23-4c91-85ea-681c8a21ebcd"
+ *               quantidade:
+ *                 type: number
+ *                 example: 0
+ *     responses:
+ *       200:
+ *         description: Produto removido do carrinho com sucesso
+ */
+router.delete('/product/rmv', (req, res, next) => CartController.rmvProductFromCart(req, res, next));
 
 export default router;
