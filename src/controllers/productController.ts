@@ -24,6 +24,66 @@ class ProductController {
         }
     }
 
+    async getProductsByPrice(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { minPrice, maxPrice } = req.query;
+            const products = await productService.getProductsByPrice(Number(minPrice), Number(maxPrice));
+            res.json(products);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getProductsByName(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { name } = req.query;
+            const products = await productService.getProductsByName(String(name));
+            res.json(products);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getProductsByTamanho(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { tamanho } = req.params;
+            const products = await productService.getProductsByTamanho(tamanho);
+            res.json(products);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getProductsByCaimento(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { caimento } = req.params;
+            const products = await productService.getProductsByCaimento(caimento);
+            res.json(products);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getProductsByMaterial(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { material } = req.query;
+            const products = await productService.getProductsByMaterial(String(material));
+            res.json(products);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getProductsByType(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { type } = req.query;
+            const products = await productService.getProductsByType(String(type));
+            res.json(products);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getProductById(req: Request, res: Response, next: NextFunction) {
         try {
             const product = await productService.getProductById(req.params.id);

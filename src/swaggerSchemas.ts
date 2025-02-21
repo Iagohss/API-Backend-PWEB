@@ -37,6 +37,7 @@ export const swaggerSchemas = {
         type: "object",
         properties: {
           nome: { type: "string" },
+          cor: {type: "string"},
           tipo: { type: "string" },
           caimento: {
             type: "string",
@@ -51,6 +52,7 @@ export const swaggerSchemas = {
         },
         example: {
           nome: "Camiseta Básica",
+          cor: "Branca",
           tipo: "Camiseta",
           caimento: "Regular",
           material: "Algodão",

@@ -18,7 +18,8 @@ model User {
 
 model Product {
   id        String  @id @default(uuid())
-  nome      String  @unique
+  nome      String  
+  cor       String
   tipo      String
   caimento  Caimento
   material  String

@@ -52,6 +52,155 @@ router.get('/', (req, res, next) => ProductController.getAllProducts(req, res, n
 
 /**
  * @swagger
+ * /products/price:
+ *   get:
+ *     summary: Retorna produtos por faixa de preço
+ *     tags: [Produtos]
+ *     parameters:
+ *       - in: query
+ *         name: minPrice
+ *         required: true
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: maxPrice
+ *         required: true
+ *         schema:
+ *           type: number
+ *     responses:
+ *       200:
+ *         description: Lista de produtos retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ProductDTO'
+ */
+router.get('/price', (req, res, next) => ProductController.getProductsByPrice(req, res, next));
+
+/**
+ * @swagger
+ * /products/name:
+ *   get:
+ *     summary: Retorna produtos pelo nome
+ *     tags: [Produtos]
+ *     parameters:
+ *       - in: query
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de produtos retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ProductDTO'
+ */
+router.get('/name', (req, res, next) => ProductController.getProductsByName(req, res, next));
+
+/**
+ * @swagger
+ * /products/tamanho/{tamanho}:
+ *   get:
+ *     summary: Retorna produtos pelo tamanho
+ *     tags: [Produtos]
+ *     parameters:
+ *       - in: path
+ *         name: tamanho
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de produtos retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ProductDTO'
+ */
+router.get('/tamanho/:tamanho', (req, res, next) => ProductController.getProductsByTamanho(req, res, next));
+
+/**
+ * @swagger
+ * /products/caimento/{caimento}:
+ *   get:
+ *     summary: Retorna produtos pelo caimento
+ *     tags: [Produtos]
+ *     parameters:
+ *       - in: path
+ *         name: caimento
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de produtos retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ProductDTO'
+ */
+router.get('/caimento/:caimento', (req, res, next) => ProductController.getProductsByCaimento(req, res, next));
+
+/**
+ * @swagger
+ * /products/material:
+ *   get:
+ *     summary: Retorna produtos pelo material
+ *     tags: [Produtos]
+ *     parameters:
+ *       - in: query
+ *         name: material
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de produtos retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ProductDTO'
+ */
+router.get('/material', (req, res, next) => ProductController.getProductsByMaterial(req, res, next));
+
+/**
+ * @swagger
+ * /products/type:
+ *   get:
+ *     summary: Retorna produtos pelo tipo
+ *     tags: [Produtos]
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de produtos retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ProductDTO'
+ */
+router.get('/type', (req, res, next) => ProductController.getProductsByType(req, res, next));
+
+/**
+ * @swagger
  * /products/{id}:
  *   get:
  *     summary: Busca um produto pelo ID
