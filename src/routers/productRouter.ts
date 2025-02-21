@@ -12,7 +12,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /products:
+ * /api/products:
  *   post:
  *     summary: Cria um novo produto
  *     tags: [Produtos]
@@ -34,7 +34,7 @@ router.post('/', (req, res, next) => ProductController.createProduct(req, res, n
 
 /**
  * @swagger
- * /products:
+ * /api/products:
  *   get:
  *     summary: Retorna todos os produtos
  *     tags: [Produtos]
@@ -52,7 +52,7 @@ router.get('/', (req, res, next) => ProductController.getAllProducts(req, res, n
 
 /**
  * @swagger
- * /products/price:
+ * /api/products/price:
  *   get:
  *     summary: Retorna produtos por faixa de preço
  *     tags: [Produtos]
@@ -81,7 +81,7 @@ router.get('/price', (req, res, next) => ProductController.getProductsByPrice(re
 
 /**
  * @swagger
- * /products/name:
+ * /api/products/name:
  *   get:
  *     summary: Retorna produtos pelo nome
  *     tags: [Produtos]
@@ -105,7 +105,7 @@ router.get('/name', (req, res, next) => ProductController.getProductsByName(req,
 
 /**
  * @swagger
- * /products/tamanho/{tamanho}:
+ * /api/products/tamanho/{tamanho}:
  *   get:
  *     summary: Retorna produtos pelo tamanho
  *     tags: [Produtos]
@@ -129,7 +129,7 @@ router.get('/tamanho/:tamanho', (req, res, next) => ProductController.getProduct
 
 /**
  * @swagger
- * /products/caimento/{caimento}:
+ * /api/products/caimento/{caimento}:
  *   get:
  *     summary: Retorna produtos pelo caimento
  *     tags: [Produtos]
@@ -153,7 +153,7 @@ router.get('/caimento/:caimento', (req, res, next) => ProductController.getProdu
 
 /**
  * @swagger
- * /products/material:
+ * /api/products/material:
  *   get:
  *     summary: Retorna produtos pelo material
  *     tags: [Produtos]
@@ -177,7 +177,7 @@ router.get('/material', (req, res, next) => ProductController.getProductsByMater
 
 /**
  * @swagger
- * /products/type:
+ * /api/products/type:
  *   get:
  *     summary: Retorna produtos pelo tipo
  *     tags: [Produtos]
@@ -201,7 +201,7 @@ router.get('/type', (req, res, next) => ProductController.getProductsByType(req,
 
 /**
  * @swagger
- * /products/{id}:
+ * /api/products/{id}:
  *   get:
  *     summary: Busca um produto pelo ID
  *     tags: [Produtos]
@@ -223,7 +223,7 @@ router.get('/:id', (req, res, next) => ProductController.getProductById(req, res
 
 /**
  * @swagger
- * /products/{id}:
+ * /api/products/{id}:
  *   put:
  *     summary: Atualiza um produto existente
  *     tags: [Produtos]
@@ -251,7 +251,7 @@ router.put('/:id', (req, res, next) => ProductController.updateProduct(req, res,
 
 /**
  * @swagger
- * /products/{id}:
+ * /api/products/{id}:
  *   delete:
  *     summary: Deleta um produto
  *     tags: [Produtos]

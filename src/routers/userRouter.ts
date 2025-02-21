@@ -12,7 +12,7 @@ export const router = express();
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   post:
  *     summary: Cria um novo usuário
  *     tags: [Usuários]
@@ -34,7 +34,7 @@ router.post('/', (req, res, next) => UserController.createUser(req, res, next));
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *   get:
  *     summary: Busca um usuário pelo ID
  *     tags: [Usuários]
@@ -62,7 +62,7 @@ router.get('/:id', (req, res, next) => {
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   get:
  *     summary: Retorna a lista de todos os usuários
  *     tags: [Usuários]
@@ -83,7 +83,7 @@ router.get('/', (req, res, next) => {
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *   put:
  *     summary: Atualiza um usuário existente
  *     tags: [Usuários]
@@ -113,7 +113,7 @@ router.put('/:id', (req, res, next) => UserController.updateUser(req, res, next)
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *   delete:
  *     summary: Deleta um usuário
  *     tags: [Usuários]
