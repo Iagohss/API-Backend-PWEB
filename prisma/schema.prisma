@@ -14,6 +14,8 @@ model User {
   email     String   @unique
   password  String
   admin     Boolean
+
+  carts     Cart[]
 }
 
 model Product {
@@ -25,6 +27,8 @@ model Product {
   material  String
   tamanho   Tamanho
   preco     Float
+
+  cartProducts CartProduct[]
 }
 
 enum Caimento {
@@ -43,4 +47,25 @@ enum Tamanho {
   M
   G
   GG
+}
+
+model Cart {
+  id        String  @id @default(uuid())
+  userId    String
+  isOpen    Boolean @default(true)
+
+  user      User    @relation(fields: [userId], references: [id]) 
+  cartProducts CartProduct[]
+}
+
+model CartProduct {
+  id        String  @id @default(uuid())
+  cartId    String
+  productId String
+  quantidade Int
+
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId]) 
 }
