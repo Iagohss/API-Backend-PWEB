@@ -1,6 +1,6 @@
-import express from 'express';
-import CartController from '../controllers/cartController';
-import cartController from '../controllers/cartController';
+import express from "express";
+import CartController from "../controllers/cartController";
+import cartController from "../controllers/cartController";
 
 const router = express.Router();
 
@@ -31,8 +31,39 @@ const router = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/CartResponse'
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Usuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Usuário não encontrado'
+ *       409:
+ *         description: O usuário já possui um carrinho aberto
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.post('/:userId', (req, res, next) => CartController.createCart(req, res, next));
+router.post("/:userId", (req, res, next) => {
+  CartController.createCart(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -49,8 +80,13 @@ router.post('/:userId', (req, res, next) => CartController.createCart(req, res, 
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/CartResponse'
+ *       204:
+ *         description: Nenhum carrinho encontrado
  */
-router.get('/', (req, res, next) => cartController.getAllCarts(req, res, next));
+router.get("/", (req, res, next) => {
+  cartController.getAllCarts(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -72,8 +108,21 @@ router.get('/', (req, res, next) => cartController.getAllCarts(req, res, next));
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/CartResponse'
+ *       404:
+ *         description: Carrinho não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Carrinho não encontrado'
  */
-router.get('/:id', (req, res, next) => CartController.getCartById(req, res, next));
+router.get("/:id", (req, res, next) => {
+  CartController.getCartById(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -94,8 +143,30 @@ router.get('/:id', (req, res, next) => CartController.getCartById(req, res, next
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/CartResponse'
+ *       404:
+ *         description: Carrinho ou usuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Usuário não encontrado'
+ *       409:
+ *         description: O usuário possui mais de um carrinho aberto
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.get('/user/:userId', (req, res, next) => CartController.getOpenCartByUser(req, res, next));
+router.get("/user/:userId", (req, res, next) => {
+  CartController.getOpenCartByUser(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -116,14 +187,27 @@ router.get('/user/:userId', (req, res, next) => CartController.getOpenCartByUser
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/CartResponse'
+ *       404:
+ *         description: Carrinho não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Carrinho não encontrado'
  */
-router.put('/close/:id', (req, res, next) => CartController.closeCart(req, res, next));
+router.put("/close/:id", (req, res, next) => {
+  CartController.closeCart(req, res, next);
+  return;
+});
 
 /**
  * @swagger
  * /api/carts/{id}:
  *   delete:
- *     summary: deleta um carrinho
+ *     summary: Deleta um carrinho
  *     tags: [Carrinhos]
  *     parameters:
  *       - in: path
@@ -134,8 +218,21 @@ router.put('/close/:id', (req, res, next) => CartController.closeCart(req, res, 
  *     responses:
  *       204:
  *         description: Carrinho deletado com sucesso
+ *       404:
+ *         description: Carrinho não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Carrinho não encontrado'
  */
-router.delete('/:id', (req, res, next) => CartController.deleteCart(req, res, next));
+router.delete("/:id", (req, res, next) => {
+  CartController.deleteCart(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -162,8 +259,54 @@ router.delete('/:id', (req, res, next) => CartController.deleteCart(req, res, ne
  *     responses:
  *       200:
  *         description: Produto adicionado ao carrinho com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 cartId:
+ *                   type: string
+ *                   example: "e0dee3e3-1054-4dfc-b5e4-a05244570b11"
+ *                 productId:
+ *                   type: string
+ *                   example: "596672c3-2f23-4c91-85ea-681c8a21ebcd"
+ *                 quantidade:
+ *                   type: number
+ *                   example: 15
+ *       404:
+ *         description: Carrinho ou produto não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Carrinho não encontrado'
+ *       409:
+ *         description: Não é possível alterar um carrinho fechado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Não é possível alterar um carrinho fechado'
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.put('/product/add', (req, res, next) => CartController.addProductToCart(req, res, next));
+router.put("/product/add", (req, res, next) => {
+  CartController.addProductToCart(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -190,7 +333,39 @@ router.put('/product/add', (req, res, next) => CartController.addProductToCart(r
  *     responses:
  *       200:
  *         description: Produto removido do carrinho com sucesso
+ *       404:
+ *         description: Carrinho ou produto não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Carrinho não encontrado'
+ *       409:
+ *         description: Não é possível alterar um carrinho fechado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Não é possível alterar um carrinho fechado'
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.delete('/product/rmv', (req, res, next) => CartController.rmvProductFromCart(req, res, next));
+router.delete("/product/rmv", (req, res, next) => {
+  CartController.rmvProductFromCart(req, res, next);
+  return;
+});
 
 export default router;

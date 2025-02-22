@@ -1,88 +1,118 @@
-import { Cart } from '../models/cart';
-import CartRepository from '../repositories/cartRepository';
+import CartClosedError from "../errors/cartClosedError";
+import CartConflictError from "../errors/cartConflictError";
+import CartNotFoundError from "../errors/cartNotFoundError";
+import InvalidInputError from "../errors/invalidInputError";
+import ProductNotFoundError from "../errors/productNotFoundError";
+import UserNotFoundError from "../errors/userNotFoundError";
+import { Cart } from "../models/cart";
+import CartRepository from "../repositories/cartRepository";
+import ProductRepository from "../repositories/productRepository";
+import UserRepository from "../repositories/userRepository";
 
 const cartRepository = new CartRepository();
 
 class CartService {
-    private cartRepository;
+  private cartRepository;
+  private userRepository;
+  private productRepository;
 
-    constructor() {
-        this.cartRepository = new CartRepository();
-    }
+  constructor() {
+    this.cartRepository = new CartRepository();
+    this.userRepository = new UserRepository();
+    this.productRepository = new ProductRepository();
+  }
 
-    async createCart(userId: string): Promise<Cart> {
-        const existingOpenCarts = await this.cartRepository.getOpenCartsByUser(userId);
-        if (existingOpenCarts.length > 0) {
-            throw new Error("Usuário já possui um carrinho aberto.");
-        }
-    
-        const cart: Cart = new Cart(userId);
-        return await this.cartRepository.createCart(cart);
-    }    
+  async createCart(userId: string): Promise<Cart> {
+    const user = await this.userRepository.getUser(userId);
+    if (!user) throw new UserNotFoundError();
 
-    async getAllCarts(): Promise<Cart[]> {
-      return await this.cartRepository.getAllCarts();
-    }
+    const existingOpenCarts = await this.cartRepository.getOpenCartsByUser(
+      userId
+    );
+    if (existingOpenCarts.length > 0) throw new CartConflictError();
 
-    async getCartById(id: string): Promise<Cart | null> {
-        return await this.cartRepository.getCartById(id);
-    }
+    const cart: Cart = new Cart(userId);
+    return await this.cartRepository.createCart(cart);
+  }
 
-    async getOpenCartByUser(userId: string): Promise<Cart> {
-        const carts = await this.cartRepository.getOpenCartsByUser(userId);
-        if (carts.length > 1){
-          throw new Error("Usuário possui mais de um carrinho aberto.");
-        }
+  async getAllCarts(): Promise<Cart[]> {
+    return await this.cartRepository.getAllCarts();
+  }
 
-        if (carts.length == 0){
-          throw new Error("Usuário não possui um carrinho aberto.");
-        }
+  async getCartById(id: string): Promise<Cart> {
+    const cart = await this.cartRepository.getCartById(id);
+    if (!cart) throw new CartNotFoundError();
+    return cart;
+  }
 
-        return carts[0];
-    }
+  async getOpenCartByUser(userId: string): Promise<Cart> {
+    const user = await this.userRepository.getUser(userId);
+    if (!user) throw new UserNotFoundError();
 
-    async closeCart(id: string): Promise<Cart> {
-        return await this.cartRepository.closeCart(id);
-    }
+    const carts = await this.cartRepository.getOpenCartsByUser(userId);
+    if (carts.length > 1) throw new CartConflictError();
+    if (carts.length == 0) throw new CartNotFoundError();
 
-    async deleteCart(id: string): Promise<void> {
-        return await this.cartRepository.deleteCart(id);
-    }
+    return carts[0];
+  }
 
-    async addProductToCart(cartId: string, productId: string, quantidade: number){
-      const cartResponse = await this.cartRepository.getCartById(cartId);
-      if (!cartResponse.isOpen) {
-          throw new Error("Não é possível alterar os produtos de um carrinho fechado");
-      }
+  async closeCart(id: string): Promise<Cart> {
+    const cart = await this.cartRepository.getCartById(id);
+    if (!cart) throw new CartNotFoundError();
+    return await this.cartRepository.closeCart(id);
+  }
 
-      if (quantidade < 0) {
-        throw new Error("Este endpoint não deve remover produtos ao carrinho.")
-      }
+  async deleteCart(id: string): Promise<void> {
+    const cart = await this.cartRepository.getCartById(id);
+    if (!cart) throw new CartNotFoundError();
+    return await this.cartRepository.deleteCart(id);
+  }
 
-      return await this.cartRepository.addProductToCart(cartId, productId, quantidade);
-    }
+  async addProductToCart(
+    cartId: string,
+    productId: string,
+    quantidade: number
+  ) {
+    const product = await this.productRepository.getProductById(productId);
+    if (!product) throw new ProductNotFoundError();
 
-    async rmvProductFromCart(cartId: string, productId: string, quantidade: number){
-      const cartResponse = await this.cartRepository.getCartById(cartId);
-      if (!cartResponse.isOpen) {
-          throw new Error("Não é possível alterar os produtos de um carrinho fechado");
-      }
+    const cartResponse = await this.cartRepository.getCartById(cartId);
+    if (!cartResponse) throw new CartNotFoundError();
+    if (!cartResponse.isOpen) throw new CartClosedError();
+    if (quantidade < 0) throw new InvalidInputError();
 
-      if (quantidade < 0) {
-        throw new Error("Este endpoint não deve adicionar produtos ao carrinho.")
-      }
+    return await this.cartRepository.addProductToCart(
+      cartId,
+      productId,
+      quantidade
+    );
+  }
 
-      const cartProduct = cartResponse.cartProducts.find(cp => cp.productId === productId);
+  async rmvProductFromCart(
+    cartId: string,
+    productId: string,
+    quantidade: number
+  ) {
+    const cartResponse = await this.cartRepository.getCartById(cartId);
+    if (!cartResponse) throw new CartNotFoundError();
+    if (!cartResponse.isOpen) throw new CartClosedError();
+    if (quantidade < 0) throw new InvalidInputError();
 
-      if (!cartProduct) {
-        throw new Error("Produto não encontrado no carrinho.");
-      }
-      if (Math.abs(quantidade) > cartProduct.quantidade) {
-        throw new Error("Não é possível remover mais produtos do que há no carrinho.");
-      }
-      
-      return await this.cartRepository.rmvProductFromCart(cartId, productId, quantidade);
-    }
+    const cartProduct = cartResponse.cartProducts.find(
+      (cp) => cp.productId === productId
+    );
+    if (!cartProduct) throw new ProductNotFoundError();
+    if (Math.abs(quantidade) > cartProduct.quantidade)
+      throw new InvalidInputError(
+        "Não é possível remover mais produtos do que há no carrinho."
+      );
+
+    return await this.cartRepository.rmvProductFromCart(
+      cartId,
+      productId,
+      quantidade
+    );
+  }
 }
 
 export default CartService;

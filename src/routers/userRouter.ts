@@ -1,5 +1,5 @@
-import express from 'express';
-import UserController from '../controllers/userController';
+import express from "express";
+import UserController from "../controllers/userController";
 
 export const router = express();
 
@@ -29,8 +29,29 @@ export const router = express();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserResponse'
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       409:
+ *         description: Email já está em uso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.post('/', (req, res, next) => UserController.createUser(req, res, next));
+router.post("/", (req, res, next) => {
+  UserController.createUser(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -54,8 +75,15 @@ router.post('/', (req, res, next) => UserController.createUser(req, res, next));
  *               $ref: '#/components/schemas/UserResponse'
  *       404:
  *         description: Usuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.get('/:id', (req, res, next) => {
+router.get("/:id", (req, res, next) => {
   UserController.getUser(req, res, next);
   return;
 });
@@ -75,8 +103,10 @@ router.get('/:id', (req, res, next) => {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/UserResponse'
+ *       204:
+ *         description: Não há usuários cadastrados
  */
-router.get('/', (req, res, next) => {
+router.get("/", (req, res, next) => {
   UserController.getAllUsers(req, res, next);
   return;
 });
@@ -106,10 +136,38 @@ router.get('/', (req, res, next) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserResponse'
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *       404:
  *         description: Usuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       409:
+ *         description: Email já está em uso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.put('/:id', (req, res, next) => UserController.updateUser(req, res, next));
+router.put("/:id", (req, res, next) => {
+  UserController.updateUser(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -128,7 +186,17 @@ router.put('/:id', (req, res, next) => UserController.updateUser(req, res, next)
  *         description: Usuário deletado com sucesso
  *       404:
  *         description: Usuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.delete('/:id', (req, res, next) => UserController.deleteUser(req, res, next));
+router.delete("/:id", (req, res, next) => {
+  UserController.deleteUser(req, res, next);
+  return;
+});
 
 export default router;
