@@ -56,9 +56,12 @@ model Cart {
   userId    String
   isOpen    Boolean @default(true)
 
-  user      User    @relation(fields: [userId], references: [id]) 
+  user      User    @relation(fields: [userId], references: [id])
   cartProducts CartProduct[]
+  purchase  Purchase? @relation()  
 }
+
+
 
 model CartProduct {
   cartId    String
@@ -70,3 +73,16 @@ model CartProduct {
 
   @@unique([cartId, productId]) 
 }
+
+model Purchase {
+  id             String   @id @default(uuid())
+  cartId         String   @unique  
+  precoTotal     Float
+  formaPagamento String
+  data           DateTime @default(now())
+
+  cart           Cart     @relation(fields: [cartId], references: [id])
+}
+
+
+
