@@ -1,74 +1,145 @@
 import prisma from "../utils/prisma";
 import { Purchase } from "../models/purchase";
 import InvalidInputError from "../errors/invalidInputError";
-import PurchaseNotFoundError from "../errors/purchaseNotFoundError";
-import PurchaseConflictError from "../errors/purchaseConflictError";
+import { PurchaseResponse } from "../models/purchaseResponse";
 
 class PurchaseRepository {
-  async createPurchase(cartId: string, precoTotal: number, formaPagamento: string): Promise<Purchase> {
+  async createPurchase(purchase: Purchase): Promise<Purchase> {
     try {
-      const existingPurchase = await prisma.purchase.findUnique({
-        where: { cartId },
-      });
-      if (existingPurchase) {
-        throw new PurchaseConflictError("Já existe uma compra para este carrinho.");
-      }
-      
       return await prisma.purchase.create({
         data: {
-          cartId,
-          precoTotal,
-          formaPagamento,
-          data: new Date(),
+          cartId: purchase.cartId,
+          precoTotal: purchase.precoTotal,
+          formaPagamento: purchase.formaPagamento,
+          data: purchase.data,
         },
       });
-
     } catch (error) {
       throw new InvalidInputError("Erro ao criar a compra.");
     }
   }
 
-  async getAllPurchases(): Promise<Purchase[]> {
+  async getAllPurchases(): Promise<PurchaseResponse[]> {
     try {
-      return await prisma.purchase.findMany();
+      return await prisma.purchase.findMany({
+        include: {
+          cart: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  admin: true
+                },
+              },
+              cartProducts: {
+                include: {
+                  product: true,
+                },
+              },
+            },
+          },
+        },
+      });
     } catch (error) {
       throw new InvalidInputError("Erro ao buscar todas as compras.");
     }
   }
 
-  async getPurchaseById(id: string): Promise<Purchase | null> {
+  async getPurchaseById(id: string): Promise<PurchaseResponse | null> {
     try {
-      const purchase = await prisma.purchase.findUnique({
+      return await prisma.purchase.findUnique({
         where: { id },
+        include: {
+          cart: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  admin: true
+                },
+              },
+              cartProducts: {
+                include: {
+                  product: true,
+                },
+              },
+            },
+          },
+        },
       });
-      if (!purchase) {
-        throw new PurchaseNotFoundError("Compra não encontrada.");
-      }
-      return purchase;
     } catch (error) {
       throw new InvalidInputError("Erro ao buscar a compra.");
     }
   }
 
-  async getPurchasesByCart(cartId: string): Promise<Purchase[]> {
+  async getPurchaseByCartId(cartId: string): Promise<PurchaseResponse | null> {
     try {
-      return await prisma.purchase.findMany({
-        where: {
-          cartId,
+      return await prisma.purchase.findUnique({
+        where: { cartId },
+        include: {
+          cart: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  admin: true
+                },
+              },
+              cartProducts: {
+                include: {
+                  product: true,
+                },
+              },
+            },
+          },
         },
       });
     } catch (error) {
-      throw new InvalidInputError("Erro ao buscar compras pelo carrinho.");
+      throw new InvalidInputError("Erro ao buscar a compra.");
+    }
+  }
+
+  async getPurchaseByCartsIds(cartsIds: string[]): Promise<PurchaseResponse[]> {
+    try {
+      return await prisma.purchase.findMany({
+        where: {
+          cartId: { in: cartsIds },
+        },
+        include: {
+          cart: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  admin: true,
+                },
+              },
+              cartProducts: {
+                include: {
+                  product: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    } catch (error) {
+      throw new InvalidInputError(
+        "Erro ao buscar compras por múltiplos carrinhos."
+      );
     }
   }
 
   async deletePurchase(id: string): Promise<void> {
     try {
-      const purchase = await prisma.purchase.findUnique({ where: { id } });
-      if (!purchase) {
-        throw new PurchaseNotFoundError("Compra não encontrada para deletar.");
-      }
-      
       await prisma.purchase.delete({
         where: { id },
       });

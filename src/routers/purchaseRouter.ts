@@ -21,20 +21,42 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/PurchaseDTO'
+ *             type: object
+ *             properties:
+ *               cartId:
+ *                 type: string
+ *                 example: "456e7890-b12d-34a5-c678-987654321000"
+ *               formaPagamento:
+ *                 type: string
+ *                 example: "Cartão de crédito"
  *     responses:
  *       201:
  *         description: Compra criada com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/PurchaseDTO'
+ *               $ref: '#/components/schemas/PurchaseResponse'
  *       400:
  *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "O carrinho está vazio"
+ *       404:
+ *         description: Carrinho, produto ou usuário não encontrado
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Carrinho não encontrado"
+ *       409:
+ *         description: Conflito na criação da compra
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Já existe uma compra associada a esse carrinho"
  */
 router.post("/", (req, res, next) => {
   PurchaseController.createPurchase(req, res, next);
-  return;
 });
 
 /**
@@ -51,13 +73,12 @@ router.post("/", (req, res, next) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/PurchaseDTO'
+ *                 $ref: '#/components/schemas/PurchaseResponse'
  *       204:
  *         description: Nenhuma compra encontrada
  */
 router.get("/", (req, res, next) => {
   PurchaseController.getAllPurchases(req, res, next);
-  return;
 });
 
 /**
@@ -78,13 +99,50 @@ router.get("/", (req, res, next) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/PurchaseDTO'
+ *               $ref: '#/components/schemas/PurchaseResponse'
  *       404:
  *         description: Compra não encontrada
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Compra não encontrada"
  */
 router.get("/:id", (req, res, next) => {
   PurchaseController.getPurchaseById(req, res, next);
-  return;
+});
+
+/**
+ * @swagger
+ * /api/purchases/user/{userId}:
+ *   get:
+ *     summary: Retorna todas as compras de um usuário específico
+ *     tags: [Compras]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Compras do usuário encontradas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/PurchaseResponse'
+ *       204:
+ *         description: Nenhuma compra encontrada para esse usuário
+ *       404:
+ *         description: Usuário não encontradao
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Usuário não encontrado"
+ */
+router.get("/user/:userId", (req, res, next) => {
+  PurchaseController.getPurchasesByUserId(req, res, next);
 });
 
 /**
@@ -104,10 +162,13 @@ router.get("/:id", (req, res, next) => {
  *         description: Compra deletada com sucesso
  *       404:
  *         description: Compra não encontrada
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Compra não encontrada"
  */
 router.delete("/:id", (req, res, next) => {
   PurchaseController.deletePurchase(req, res, next);
-  return;
 });
 
 export default router;

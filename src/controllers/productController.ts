@@ -15,8 +15,10 @@ class ProductController {
     } catch (error) {
       if (error instanceof InvalidInputError) {
         return res.status(400).json({ error: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 
@@ -28,7 +30,8 @@ class ProductController {
       }
       res.json(products);
     } catch (error) {
-      next(error);
+      console.error(error);
+      res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
 
@@ -46,8 +49,10 @@ class ProductController {
     } catch (error) {
       if (error instanceof InvalidInputError) {
         return res.status(400).json({ error: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 
@@ -60,7 +65,8 @@ class ProductController {
       }
       res.json(products);
     } catch (error) {
-      next(error);
+      console.error(error);
+      res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
 
@@ -75,8 +81,10 @@ class ProductController {
     } catch (error) {
       if (error instanceof InvalidInputError) {
         return res.status(400).json({ error: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 
@@ -91,8 +99,10 @@ class ProductController {
     } catch (error) {
       if (error instanceof InvalidInputError) {
         return res.status(400).json({ error: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 
@@ -107,7 +117,8 @@ class ProductController {
       }
       res.json(products);
     } catch (error) {
-      next(error);
+      console.error(error);
+      res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
 
@@ -120,7 +131,8 @@ class ProductController {
       }
       res.json(products);
     } catch (error) {
-      next(error);
+      console.error(error);
+      res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
 
@@ -131,8 +143,10 @@ class ProductController {
     } catch (error) {
       if (error instanceof ProductNotFoundError) {
         return res.status(404).json({ error: "Produto não encontrado" });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 
@@ -149,8 +163,10 @@ class ProductController {
       }
       if (error instanceof ProductNotFoundError) {
         return res.status(404).json({ error: "Produto não encontrado" });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 
@@ -161,8 +177,10 @@ class ProductController {
     } catch (error) {
       if (error instanceof ProductNotFoundError) {
         return res.status(404).json({ error: "Produto não encontrado" });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 }

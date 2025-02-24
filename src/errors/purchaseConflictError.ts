@@ -1,5 +1,5 @@
 class PurchaseConflictError extends Error {
-    constructor(message = "Conflito ao processar a compra.") {
+    constructor(message = "Já existe uma compra para este carrinho.") {
       super(message);
       this.name = "PurchaseConflictError";
     }

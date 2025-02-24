@@ -9,8 +9,6 @@ import CartRepository from "../repositories/cartRepository";
 import ProductRepository from "../repositories/productRepository";
 import UserRepository from "../repositories/userRepository";
 
-const cartRepository = new CartRepository();
-
 class CartService {
   private cartRepository;
   private userRepository;
@@ -31,8 +29,7 @@ class CartService {
     );
     if (existingOpenCarts.length > 0) throw new CartConflictError();
 
-    const cart: Cart = new Cart(userId);
-    return await this.cartRepository.createCart(cart);
+    return await this.cartRepository.createCart(userId);
   }
 
   async getAllCarts(): Promise<Cart[]> {
