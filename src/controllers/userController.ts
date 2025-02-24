@@ -23,8 +23,10 @@ class UserController {
       }
       if (error instanceof UserConflictError) {
         return res.status(409).json({ message: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 
@@ -37,8 +39,10 @@ class UserController {
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         return res.status(404).json({ message: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 
@@ -50,7 +54,8 @@ class UserController {
       }
       res.status(200).json(users);
     } catch (error) {
-      next(error);
+      console.error(error);
+      res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
 
@@ -68,15 +73,17 @@ class UserController {
       res.status(200).json(updatedUser);
     } catch (error) {
       if (error instanceof InvalidInputError) {
-        return res.status(400).json({ message: "Dados de entrada inválidos." });
+        return res.status(400).json({ message: error.message });
       }
       if (error instanceof UserNotFoundError) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
+        return res.status(404).json({ message: error.message });
       }
       if (error instanceof UserConflictError) {
         return res.status(409).json({ message: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 
@@ -87,9 +94,11 @@ class UserController {
       res.status(204).send();
     } catch (error) {
       if (error instanceof UserNotFoundError) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
+        return res.status(404).json({ message: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
       }
-      next(error);
     }
   }
 }

@@ -13,60 +13,6 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/carts/{userId}:
- *   post:
- *     summary: Gera um novo carrinho vazio para um usuário
- *     tags: [Carrinhos]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: string
- *         description: ID do usuário
- *     responses:
- *       201:
- *         description: Carrinho criado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CartResponse'
- *       400:
- *         description: Dados de entrada inválidos
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *       404:
- *         description: Usuário não encontrado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'Usuário não encontrado'
- *       409:
- *         description: O usuário já possui um carrinho aberto
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- */
-router.post("/:userId", (req, res, next) => {
-  CartController.createCart(req, res, next);
-  return;
-});
-
-/**
- * @swagger
  * /api/carts:
  *   get:
  *     summary: Retorna todos os carrinhos

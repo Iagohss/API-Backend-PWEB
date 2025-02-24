@@ -28,7 +28,7 @@ export const router = express();
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/UserResponse'
+ *               $ref: '#/components/schemas/UserResponseWithCartId'
  *       400:
  *         description: Dados de entrada inválidos
  *         content:
