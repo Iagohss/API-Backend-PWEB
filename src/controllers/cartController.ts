@@ -10,29 +10,6 @@ import CartClosedError from "../errors/cartClosedError";
 const cartService = new CartService();
 
 class CartController {
-  async createCart(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { userId } = req.params;
-      const cart = await cartService.createCart(userId);
-      return res.status(201).json(cart);
-    } catch (error) {
-      if (error instanceof InvalidInputError) {
-        return res.status(400).json({ message: error.message });
-      }
-      if (error instanceof UserNotFoundError) {
-        return res.status(404).json({ message: "Usuário não encontrado" });
-      }
-      if (error instanceof CartConflictError) {
-        return res
-          .status(409)
-          .json({ message: "O usuário já possui um carrinho aberto" });
-      } else {
-        console.error(error);
-        res.status(500).json({ message: "Erro interno do servidor" });
-      }
-    }
-  }
-
   async getCartById(req: Request, res: Response, next: NextFunction) {
     try {
       const cart = await cartService.getCartById(req.params.id);

@@ -20,18 +20,6 @@ class CartService {
     this.productRepository = new ProductRepository();
   }
 
-  async createCart(userId: string): Promise<Cart> {
-    const user = await this.userRepository.getUser(userId);
-    if (!user) throw new UserNotFoundError();
-
-    const existingOpenCarts = await this.cartRepository.getOpenCartsByUser(
-      userId
-    );
-    if (existingOpenCarts.length > 0) throw new CartConflictError();
-
-    return await this.cartRepository.createCart(userId);
-  }
-
   async getAllCarts(): Promise<Cart[]> {
     return await this.cartRepository.getAllCarts();
   }
