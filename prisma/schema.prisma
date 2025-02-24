@@ -5,6 +5,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+
+  //Comentar a linha abaixo caso esteja rodando o postgreSQL localmente
   directUrl = env("DIRECT_URL")
 }
 

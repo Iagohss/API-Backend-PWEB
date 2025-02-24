@@ -1,5 +1,5 @@
-import express from 'express';
-import ProductController from '../controllers/productController';
+import express from "express";
+import ProductController from "../controllers/productController";
 
 const router = express.Router();
 
@@ -29,8 +29,20 @@ const router = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ProductDTO'
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.post('/', (req, res, next) => ProductController.createProduct(req, res, next));
+router.post("/", (req, res, next) => {
+  ProductController.createProduct(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -47,8 +59,13 @@ router.post('/', (req, res, next) => ProductController.createProduct(req, res, n
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/ProductDTO'
+ *       204:
+ *         description: Nenhum produto encontrado
  */
-router.get('/', (req, res, next) => ProductController.getAllProducts(req, res, next));
+router.get("/", (req, res, next) => {
+  ProductController.getAllProducts(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -76,8 +93,22 @@ router.get('/', (req, res, next) => ProductController.getAllProducts(req, res, n
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/ProductDTO'
+ *       204:
+ *         description: Nenhum produto encontrado na faixa de preço
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.get('/price', (req, res, next) => ProductController.getProductsByPrice(req, res, next));
+router.get("/price", (req, res, next) => {
+  ProductController.getProductsByPrice(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -100,8 +131,13 @@ router.get('/price', (req, res, next) => ProductController.getProductsByPrice(re
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/ProductDTO'
+ *       204:
+ *         description: Nenhum produto encontrado com o nome fornecido
  */
-router.get('/name', (req, res, next) => ProductController.getProductsByName(req, res, next));
+router.get("/name", (req, res, next) => {
+  ProductController.getProductsByName(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -124,8 +160,22 @@ router.get('/name', (req, res, next) => ProductController.getProductsByName(req,
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/ProductDTO'
+ *       204:
+ *         description: Nenhum produto encontrado com o tamanho fornecido
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.get('/tamanho/:tamanho', (req, res, next) => ProductController.getProductsByTamanho(req, res, next));
+router.get("/tamanho/:tamanho", (req, res, next) => {
+  ProductController.getProductsByTamanho(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -148,8 +198,22 @@ router.get('/tamanho/:tamanho', (req, res, next) => ProductController.getProduct
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/ProductDTO'
+ *       204:
+ *         description: Nenhum produto encontrado com o caimento fornecido
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.get('/caimento/:caimento', (req, res, next) => ProductController.getProductsByCaimento(req, res, next));
+router.get("/caimento/:caimento", (req, res, next) => {
+  ProductController.getProductsByCaimento(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -172,8 +236,13 @@ router.get('/caimento/:caimento', (req, res, next) => ProductController.getProdu
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/ProductDTO'
+ *       204:
+ *         description: Nenhum produto encontrado com o material fornecido
  */
-router.get('/material', (req, res, next) => ProductController.getProductsByMaterial(req, res, next));
+router.get("/material", (req, res, next) => {
+  ProductController.getProductsByMaterial(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -196,8 +265,13 @@ router.get('/material', (req, res, next) => ProductController.getProductsByMater
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/ProductDTO'
+ *       204:
+ *         description: Nenhum produto encontrado com o tipo fornecido
  */
-router.get('/type', (req, res, next) => ProductController.getProductsByType(req, res, next));
+router.get("/type", (req, res, next) => {
+  ProductController.getProductsByType(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -218,8 +292,20 @@ router.get('/type', (req, res, next) => ProductController.getProductsByType(req,
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ProductDTO'
+ *       404:
+ *         description: Produto não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.get('/:id', (req, res, next) => ProductController.getProductById(req, res, next));
+router.get("/:id", (req, res, next) => {
+  ProductController.getProductById(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -246,8 +332,29 @@ router.get('/:id', (req, res, next) => ProductController.getProductById(req, res
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ProductDTO'
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Produto não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.put('/:id', (req, res, next) => ProductController.updateProduct(req, res, next));
+router.put("/:id", (req, res, next) => {
+  ProductController.updateProduct(req, res, next);
+  return;
+});
 
 /**
  * @swagger
@@ -264,7 +371,19 @@ router.put('/:id', (req, res, next) => ProductController.updateProduct(req, res,
  *     responses:
  *       204:
  *         description: Produto deletado com sucesso
+ *       404:
+ *         description: Produto não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
-router.delete('/:id', (req, res, next) => ProductController.deleteProduct(req, res, next));
+router.delete("/:id", (req, res, next) => {
+  ProductController.deleteProduct(req, res, next);
+  return;
+});
 
 export default router;

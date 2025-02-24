@@ -1,3 +1,5 @@
+import InvalidInputError from "../errors/invalidInputError";
+import UserNotFoundError from "../errors/userNotFoundError";
 import { User } from "../models/user";
 import prisma from "../utils/prisma";
 
@@ -5,32 +7,40 @@ class UserRepository {
   async createUser(user: User): Promise<User> {
     try {
       const newUser = await prisma.user.create({
-        data: { 
+        data: {
           name: user.name,
           email: user.email,
           password: user.password,
           admin: user.admin,
         },
       });
-      return newUser; 
+      return newUser;
     } catch (error) {
-      throw new Error('Erro ao criar um usuário.');
+      throw new InvalidInputError("Erro ao criar o usuário");
     }
   }
 
-  async getUser(id: string): Promise<User> {
+  async getUser(id: string): Promise<User | null> {
     try {
       const user = await prisma.user.findUnique({
         where: { id: id },
       });
 
-      if (!user) {
-        throw new Error('Usuário não encontrado.');
-      }
-
-      return user; 
+      return user;
     } catch (error) {
-      throw new Error('Erro ao buscar o usuário pelo e-mail.');
+      throw new UserNotFoundError();
+    }
+  }
+
+  async getUserByEmail(email: string): Promise<User | null> {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { email: email },
+      });
+
+      return user;
+    } catch (error) {
+      throw new UserNotFoundError();
     }
   }
 
@@ -50,9 +60,8 @@ class UserRepository {
           password: user.password,
         },
       });
-      
     } catch (error) {
-      throw new Error('Erro ao atualizar usuário.');
+      throw new InvalidInputError("Erro ao atualizar o usuário");
     }
   }
 
@@ -62,10 +71,9 @@ class UserRepository {
         where: { id: id },
       });
     } catch (error) {
-      throw new Error('Erro ao deletar usuário.');
+      throw new InvalidInputError("Erro ao deletar o usuário");
     }
   }
-
 }
 
 export default UserRepository;
