@@ -69,21 +69,16 @@ router.get("/", (req, res, next) => {
 
 /**
  * @swagger
- * /api/products/price:
- *   get:
- *     summary: Retorna produtos por faixa de preço
+ * /api/products/filter:
+ *   post:
+ *     summary: Retorna produtos filtrados com base nos critérios fornecidos
  *     tags: [Produtos]
- *     parameters:
- *       - in: query
- *         name: minPrice
- *         required: true
- *         schema:
- *           type: number
- *       - in: query
- *         name: maxPrice
- *         required: true
- *         schema:
- *           type: number
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/ProductFilterDTO"
  *     responses:
  *       200:
  *         description: Lista de produtos retornada com sucesso
@@ -92,11 +87,29 @@ router.get("/", (req, res, next) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/ProductDTO'
+ *                 $ref: "#/components/schemas/ProductDTO"
  *       204:
- *         description: Nenhum produto encontrado na faixa de preço
+ *         description: Nenhum produto encontrado para os filtros fornecidos
  *       400:
- *         description: Dados de entrada inválidos
+ *         description: Requisição inválida. Pode ocorrer nos seguintes casos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *             examples:
+ *               Filtros não fornecidos:
+ *                 value: { "error": "Pelo menos um filtro deve ser fornecido." }
+ *               Apenas minPrice fornecido:
+ *                 value: { "error": "Ambos minPrice e maxPrice devem ser fornecidos." }
+ *               Apenas maxPrice fornecido:
+ *                 value: { "error": "Ambos minPrice e maxPrice devem ser fornecidos." }
+ *               minPrice maior que maxPrice:
+ *                 value: { "error": "O preço mínimo não pode ser maior que o máximo." }
+ *       500:
+ *         description: Erro interno do servidor
  *         content:
  *           application/json:
  *             schema:
@@ -104,172 +117,11 @@ router.get("/", (req, res, next) => {
  *               properties:
  *                 message:
  *                   type: string
- */
-router.get("/price", (req, res, next) => {
-  ProductController.getProductsByPrice(req, res, next);
-  return;
-});
-
-/**
- * @swagger
- * /api/products/name:
- *   get:
- *     summary: Retorna produtos pelo nome
- *     tags: [Produtos]
- *     parameters:
- *       - in: query
- *         name: name
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Lista de produtos retornada com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/ProductDTO'
- *       204:
- *         description: Nenhum produto encontrado com o nome fornecido
- */
-router.get("/name", (req, res, next) => {
-  ProductController.getProductsByName(req, res, next);
-  return;
-});
-
-/**
- * @swagger
- * /api/products/tamanho/{tamanho}:
- *   get:
- *     summary: Retorna produtos pelo tamanho
- *     tags: [Produtos]
- *     parameters:
- *       - in: path
- *         name: tamanho
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Lista de produtos retornada com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/ProductDTO'
- *       204:
- *         description: Nenhum produto encontrado com o tamanho fornecido
- *       400:
- *         description: Dados de entrada inválidos
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
+ *                 details:
  *                   type: string
  */
-router.get("/tamanho/:tamanho", (req, res, next) => {
-  ProductController.getProductsByTamanho(req, res, next);
-  return;
-});
-
-/**
- * @swagger
- * /api/products/caimento/{caimento}:
- *   get:
- *     summary: Retorna produtos pelo caimento
- *     tags: [Produtos]
- *     parameters:
- *       - in: path
- *         name: caimento
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Lista de produtos retornada com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/ProductDTO'
- *       204:
- *         description: Nenhum produto encontrado com o caimento fornecido
- *       400:
- *         description: Dados de entrada inválidos
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- */
-router.get("/caimento/:caimento", (req, res, next) => {
-  ProductController.getProductsByCaimento(req, res, next);
-  return;
-});
-
-/**
- * @swagger
- * /api/products/material:
- *   get:
- *     summary: Retorna produtos pelo material
- *     tags: [Produtos]
- *     parameters:
- *       - in: query
- *         name: material
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Lista de produtos retornada com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/ProductDTO'
- *       204:
- *         description: Nenhum produto encontrado com o material fornecido
- */
-router.get("/material", (req, res, next) => {
-  ProductController.getProductsByMaterial(req, res, next);
-  return;
-});
-
-/**
- * @swagger
- * /api/products/type:
- *   get:
- *     summary: Retorna produtos pelo tipo
- *     tags: [Produtos]
- *     parameters:
- *       - in: query
- *         name: type
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Lista de produtos retornada com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/ProductDTO'
- *       204:
- *         description: Nenhum produto encontrado com o tipo fornecido
- */
-router.get("/type", (req, res, next) => {
-  ProductController.getProductsByType(req, res, next);
+router.post("/filter", (req, res, next) => {
+  ProductController.getFilteredProducts(req, res, next);
   return;
 });
 

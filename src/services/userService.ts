@@ -2,16 +2,19 @@ import { UserDTO } from '../dtos/userDTO';
 import UserConflictError from '../errors/userConflictError';
 import userNotFoundError from '../errors/userNotFoundError';
 import { User } from '../models/user';
+import CartRepository from '../repositories/cartRepository';
 import UserRepository from '../repositories/userRepository';
 
 class UserService {
   private userRepository;
+  private cartRepository;
 
   constructor() {
     this.userRepository = new UserRepository();
+    this.cartRepository = new CartRepository();
   }
 
-  async createUser(userDTO : UserDTO ): Promise<User>  {
+  async createUser(userDTO : UserDTO ): Promise<User & {cartId: string}>  {
     const existingUser = await this.userRepository.getUserByEmail(userDTO.email);
     if(existingUser)
       throw new UserConflictError();
@@ -22,7 +25,12 @@ class UserService {
       userDTO.password, 
       userDTO.admin
     );
-    return await this.userRepository.createUser(user);
+    const newUser = await this.userRepository.createUser(user);
+    const cart = await this.cartRepository.createCart(newUser.id);
+    return {
+      ...newUser,
+      cartId: cart.id,
+    };
   }
 
   async getUser(id: string): Promise<User>  {

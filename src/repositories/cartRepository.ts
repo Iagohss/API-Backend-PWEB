@@ -7,11 +7,11 @@ import ProductNotFoundError from "../errors/productNotFoundError";
 import CartNotFoundError from "../errors/cartNotFoundError";
 
 class CartRepository {
-  async createCart(cart: Cart) {
+  async createCart(userId: string) {
     try {
       return await prisma.cart.create({
         data: {
-          userId: cart.userId,
+          userId: userId,
           isOpen: true,
         },
       });
@@ -53,8 +53,22 @@ class CartRepository {
       return carts;
     } catch (error) {
       throw new InvalidInputError(
-        "Erro ao buscar o carrinhos abertos do usuário."
+        "Erro ao buscar os carrinhos abertos do usuário."
       );
+    }
+  }
+
+  async getOpenAllCartsByUser(userId: string): Promise<Cart[]> {
+    try {
+      const carts = await prisma.cart.findMany({
+        where: {
+          userId,
+        },
+      });
+
+      return carts;
+    } catch (error) {
+      throw new InvalidInputError("Erro ao buscar os carrinhos de um usuário.");
     }
   }
 

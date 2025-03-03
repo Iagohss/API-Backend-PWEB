@@ -4,6 +4,7 @@ import { Product } from "../models/product";
 import ProductRepository from "../repositories/productRepository";
 import ProductNotFoundError from "../errors/productNotFoundError";
 import InvalidInputError from "../errors/invalidInputError";
+import { ProductFilterDTO } from "../dtos/productFilterDTO";
 
 class ProductService {
   private productRepository;
@@ -29,36 +30,29 @@ class ProductService {
     return await this.productRepository.getAllProducts();
   }
 
-  async getProductsByPrice(
-    minPrice: number,
-    maxPrice: number
-  ): Promise<Product[]> {
-    if (minPrice > maxPrice) throw new InvalidInputError();
-    return await this.productRepository.getProductsByPrice(minPrice, maxPrice);
-  }
+  async getFilteredProducts(filters: ProductFilterDTO): Promise<Product[]> {
+    if (!filters || Object.keys(filters).length === 0) {
+      throw new InvalidInputError("Pelo menos um filtro deve ser fornecido.");
+    }
 
-  async getProductsByName(partialName: string): Promise<Product[]> {
-    return await this.productRepository.getProductsByName(partialName);
-  }
+    if (
+      (filters.minPrice !== undefined && filters.maxPrice === undefined) ||
+      (filters.maxPrice !== undefined && filters.minPrice === undefined)
+    ) {
+      throw new InvalidInputError(
+        "Ambos minPrice e maxPrice devem ser fornecidos."
+      );
+    }
 
-  async getProductsByTamanho(tamanho: string): Promise<Product[]> {
-    return await this.productRepository.getProductsByTamanho(
-      tamanho as Tamanho
-    );
-  }
+    if (filters.minPrice !== undefined && filters.maxPrice !== undefined) {
+      if (filters.minPrice > filters.maxPrice) {
+        throw new InvalidInputError(
+          "O preço mínimo não pode ser maior que o máximo"
+        );
+      }
+    }
 
-  async getProductsByCaimento(caimento: string): Promise<Product[]> {
-    return await this.productRepository.getProductsByCaimento(
-      caimento as Caimento
-    );
-  }
-
-  async getProductsByMaterial(material: string): Promise<Product[]> {
-    return await this.productRepository.getProductsByMaterial(material);
-  }
-
-  async getProductsByType(type: string): Promise<Product[]> {
-    return await this.productRepository.getProductsByType(type);
+    return await this.productRepository.getFilteredProducts(filters);
   }
 
   async getProductById(id: string): Promise<Product> {
