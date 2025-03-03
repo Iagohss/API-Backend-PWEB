@@ -3,6 +3,7 @@ import ProductService from "../services/productService";
 import { ProductDTO } from "../dtos/productDTO";
 import InvalidInputError from "../errors/invalidInputError";
 import ProductNotFoundError from "../errors/productNotFoundError";
+import { ProductFilterDTO } from "../dtos/productFilterDTO";
 
 const productService = new ProductService();
 
@@ -35,17 +36,14 @@ class ProductController {
     }
   }
 
-  async getProductsByPrice(req: Request, res: Response, next: NextFunction) {
+  async getFilteredProducts(req: Request, res: Response, next: NextFunction) {
     try {
-      const { minPrice, maxPrice } = req.query;
-      const products = await productService.getProductsByPrice(
-        Number(minPrice),
-        Number(maxPrice)
-      );
-      if (products.length === 0) {
+      const productFilterDTO: ProductFilterDTO = req.body;
+      const filteredProducts = await productService.getFilteredProducts(productFilterDTO);
+      if (filteredProducts.length === 0) {
         return res.status(204).send();
       }
-      res.json(products);
+      res.json(filteredProducts);
     } catch (error) {
       if (error instanceof InvalidInputError) {
         return res.status(400).json({ error: error.message });
@@ -53,86 +51,6 @@ class ProductController {
         console.error(error);
         res.status(500).json({ message: "Erro interno do servidor" });
       }
-    }
-  }
-
-  async getProductsByName(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { name } = req.query;
-      const products = await productService.getProductsByName(String(name));
-      if (products.length === 0) {
-        return res.status(204).send();
-      }
-      res.json(products);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erro interno do servidor" });
-    }
-  }
-
-  async getProductsByTamanho(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { tamanho } = req.params;
-      const products = await productService.getProductsByTamanho(tamanho);
-      if (products.length === 0) {
-        return res.status(204).send();
-      }
-      res.json(products);
-    } catch (error) {
-      if (error instanceof InvalidInputError) {
-        return res.status(400).json({ error: error.message });
-      } else {
-        console.error(error);
-        res.status(500).json({ message: "Erro interno do servidor" });
-      }
-    }
-  }
-
-  async getProductsByCaimento(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { caimento } = req.params;
-      const products = await productService.getProductsByCaimento(caimento);
-      if (products.length === 0) {
-        return res.status(204).send();
-      }
-      res.json(products);
-    } catch (error) {
-      if (error instanceof InvalidInputError) {
-        return res.status(400).json({ error: error.message });
-      } else {
-        console.error(error);
-        res.status(500).json({ message: "Erro interno do servidor" });
-      }
-    }
-  }
-
-  async getProductsByMaterial(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { material } = req.query;
-      const products = await productService.getProductsByMaterial(
-        String(material)
-      );
-      if (products.length === 0) {
-        return res.status(204).send();
-      }
-      res.json(products);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erro interno do servidor" });
-    }
-  }
-
-  async getProductsByType(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { type } = req.query;
-      const products = await productService.getProductsByType(String(type));
-      if (products.length === 0) {
-        return res.status(204).send();
-      }
-      res.json(products);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
 

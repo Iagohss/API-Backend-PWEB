@@ -1,5 +1,6 @@
-import { Caimento, PrismaClient, Tamanho } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import { Product } from "../models/product";
+import { ProductFilter } from "../models/productFilter";
 import InvalidInputError from "../errors/invalidInputError";
 
 const prisma = new PrismaClient();
@@ -31,82 +32,31 @@ class ProductRepository {
     }
   }
 
-  async getProductsByPrice(
-    minPrice: number,
-    maxPrice: number
-  ): Promise<Product[]> {
+  async getFilteredProducts(filters: ProductFilter): Promise<Product[]> {
     try {
       return await prisma.product.findMany({
         where: {
-          preco: {
-            gte: minPrice,
-            lte: maxPrice,
-          },
-        },
-      });
-    } catch (error) {
-      throw new InvalidInputError("Erro ao buscar os produtos");
-    }
-  }
-
-  async getProductsByName(partialName: string): Promise<Product[]> {
-    try {
-      return await prisma.product.findMany({
-        where: {
-          nome: {
-            contains: partialName,
-            mode: "insensitive",
-          },
-        },
-      });
-    } catch (error) {
-      throw new InvalidInputError("Erro ao buscar os produtos");
-    }
-  }
-
-  async getProductsByTamanho(tamanho: Tamanho): Promise<Product[]> {
-    try {
-      return await prisma.product.findMany({
-        where: { tamanho },
-      });
-    } catch (error) {
-      throw new InvalidInputError("Erro ao buscar os produtos");
-    }
-  }
-
-  async getProductsByCaimento(caimento: Caimento): Promise<Product[]> {
-    try {
-      return await prisma.product.findMany({
-        where: { caimento },
-      });
-    } catch (error) {
-      throw new InvalidInputError("Erro ao buscar os produtos");
-    }
-  }
-
-  async getProductsByMaterial(material: string): Promise<Product[]> {
-    try {
-      return await prisma.product.findMany({
-        where: {
-          material: {
-            contains: material,
-            mode: "insensitive",
-          },
-        },
-      });
-    } catch (error) {
-      throw new InvalidInputError("Erro ao buscar os produtos");
-    }
-  }
-
-  async getProductsByType(type: string): Promise<Product[]> {
-    try {
-      return await prisma.product.findMany({
-        where: {
-          tipo: {
-            contains: type,
-            mode: "insensitive",
-          },
+          nome: filters.nome
+            ? { contains: filters.nome, mode: "insensitive" }
+            : Prisma.skip,
+          tipo: filters.tipo
+            ? { contains: filters.tipo, mode: "insensitive" }
+            : Prisma.skip,
+          cor: filters.cor
+            ? { contains: filters.cor, mode: "insensitive" }
+            : Prisma.skip,
+          caimento: filters.caimento ?? Prisma.skip,
+          material: filters.material
+            ? { contains: filters.material, mode: "insensitive" }
+            : Prisma.skip,
+          tamanho: filters.tamanho ?? Prisma.skip,
+          preco:
+            filters.minPrice && filters.maxPrice
+              ? {
+                  gte: filters.minPrice ?? Prisma.skip,
+                  lte: filters.maxPrice ?? Prisma.skip,
+                }
+              : Prisma.skip,
         },
       });
     } catch (error) {

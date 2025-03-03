@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["strictUndefinedChecks"]
 }
 
 datasource db {
@@ -11,24 +12,24 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  admin     Boolean
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  password String
+  admin    Boolean
 
-  carts     Cart[]
+  carts Cart[]
 }
 
 model Product {
-  id        String  @id @default(uuid())
-  nome      String  
-  cor       String
-  tipo      String
-  caimento  Caimento
-  material  String
-  tamanho   Tamanho
-  preco     Float
+  id       String   @id @default(uuid())
+  nome     String
+  cor      String
+  tipo     String
+  caimento Caimento
+  material String
+  tamanho  Tamanho
+  preco    Float
 
   cartProducts CartProduct[]
 }
@@ -52,37 +53,32 @@ enum Tamanho {
 }
 
 model Cart {
-  id        String  @id @default(uuid())
-  userId    String
-  isOpen    Boolean @default(true)
+  id     String  @id @default(uuid())
+  userId String
+  isOpen Boolean @default(true)
 
-  user      User    @relation(fields: [userId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
   cartProducts CartProduct[]
-  purchase  Purchase? @relation()  
+  purchase     Purchase?     @relation()
 }
 
-
-
 model CartProduct {
-  cartId    String
-  productId String
+  cartId     String
+  productId  String
   quantidade Int
 
   cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@unique([cartId, productId]) 
+  @@unique([cartId, productId])
 }
 
 model Purchase {
   id             String   @id @default(uuid())
-  cartId         String   @unique  
+  cartId         String   @unique
   precoTotal     Float
   formaPagamento String
   data           DateTime @default(now())
 
-  cart           Cart     @relation(fields: [cartId], references: [id])
+  cart Cart @relation(fields: [cartId], references: [id])
 }
-
-
-
