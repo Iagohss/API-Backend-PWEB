@@ -6,6 +6,7 @@ import UserNotFoundError from "../errors/userNotFoundError";
 import InvalidInputError from "../errors/invalidInputError";
 import CartConflictError from "../errors/cartConflictError";
 import CartClosedError from "../errors/cartClosedError";
+import { CartProductDTO } from "../dtos/cartProductDTO";
 
 const cartService = new CartService();
 
@@ -88,12 +89,8 @@ class CartController {
 
   async addProductToCart(req: Request, res: Response, next: NextFunction) {
     try {
-      const { cartId, productId, quantidade } = req.body;
-      const cart = await cartService.addProductToCart(
-        cartId,
-        productId,
-        quantidade
-      );
+      const cartProductDTO: CartProductDTO = req.body;
+      const cart = await cartService.addProductToCart(cartProductDTO);
       return res.status(200).json(cart);
     } catch (error) {
       if (error instanceof CartNotFoundError) {
@@ -116,12 +113,8 @@ class CartController {
 
   async rmvProductFromCart(req: Request, res: Response, next: NextFunction) {
     try {
-      const { cartId, productId, quantidade } = req.body;
-      const cart = await cartService.rmvProductFromCart(
-        cartId,
-        productId,
-        quantidade
-      );
+      const cartProductDTO: CartProductDTO = req.body;
+      const cart = await cartService.rmvProductFromCart(cartProductDTO);
       return res.status(200).json(cart);
     } catch (error) {
       if (error instanceof CartNotFoundError) {

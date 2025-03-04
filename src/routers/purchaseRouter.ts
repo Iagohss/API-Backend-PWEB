@@ -1,5 +1,9 @@
 import express from "express";
 import PurchaseController from "../controllers/purchaseController";
+import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
+import { PurchaseDTO } from "../dtos/purchaseDTO";
+import { GetIdDTO } from "../dtos/getIdDTO";
+import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
 
 const router = express.Router();
 
@@ -55,7 +59,7 @@ const router = express.Router();
  *             example:
  *               message: "Já existe uma compra associada a esse carrinho"
  */
-router.post("/", (req, res, next) => {
+router.post("/", validateBodyMiddleware(PurchaseDTO), (req, res, next) => {
   PurchaseController.createPurchase(req, res, next);
 });
 
@@ -107,7 +111,7 @@ router.get("/", (req, res, next) => {
  *             example:
  *               message: "Compra não encontrada"
  */
-router.get("/:id", (req, res, next) => {
+router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
   PurchaseController.getPurchaseById(req, res, next);
 });
 
@@ -141,9 +145,13 @@ router.get("/:id", (req, res, next) => {
  *             example:
  *               message: "Usuário não encontrado"
  */
-router.get("/user/:userId", (req, res, next) => {
-  PurchaseController.getPurchasesByUserId(req, res, next);
-});
+router.get(
+  "/user/:userId",
+  validateParamsMiddleware(GetIdDTO),
+  (req, res, next) => {
+    PurchaseController.getPurchasesByUserId(req, res, next);
+  }
+);
 
 /**
  * @swagger
@@ -167,7 +175,7 @@ router.get("/user/:userId", (req, res, next) => {
  *             example:
  *               message: "Compra não encontrada"
  */
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
   PurchaseController.deletePurchase(req, res, next);
 });
 

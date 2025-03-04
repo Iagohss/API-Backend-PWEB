@@ -1,6 +1,10 @@
 import express from "express";
 import CartController from "../controllers/cartController";
 import cartController from "../controllers/cartController";
+import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
+import { GetIdDTO } from "../dtos/getIdDTO";
+import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
+import { CartProductDTO } from "../dtos/cartProductDTO";
 
 const router = express.Router();
 
@@ -65,7 +69,7 @@ router.get("/", (req, res, next) => {
  *                   type: string
  *                   example: 'Carrinho não encontrado'
  */
-router.get("/:id", (req, res, next) => {
+router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
   CartController.getCartById(req, res, next);
   return;
 });
@@ -109,10 +113,14 @@ router.get("/:id", (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.get("/user/:userId", (req, res, next) => {
-  CartController.getOpenCartByUser(req, res, next);
-  return;
-});
+router.get(
+  "/user/:userId",
+  validateParamsMiddleware(GetIdDTO),
+  (req, res, next) => {
+    CartController.getOpenCartByUser(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -144,10 +152,14 @@ router.get("/user/:userId", (req, res, next) => {
  *                   type: string
  *                   example: 'Carrinho não encontrado'
  */
-router.put("/close/:id", (req, res, next) => {
-  CartController.closeCart(req, res, next);
-  return;
-});
+router.put(
+  "/close/:id",
+  validateParamsMiddleware(GetIdDTO),
+  (req, res, next) => {
+    CartController.closeCart(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -175,7 +187,7 @@ router.put("/close/:id", (req, res, next) => {
  *                   type: string
  *                   example: 'Carrinho não encontrado'
  */
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
   CartController.deleteCart(req, res, next);
   return;
 });
@@ -249,10 +261,14 @@ router.delete("/:id", (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.put("/product/add", (req, res, next) => {
-  CartController.addProductToCart(req, res, next);
-  return;
-});
+router.put(
+  "/product/add",
+  validateBodyMiddleware(CartProductDTO),
+  (req, res, next) => {
+    CartController.addProductToCart(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -309,9 +325,13 @@ router.put("/product/add", (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.delete("/product/rmv", (req, res, next) => {
-  CartController.rmvProductFromCart(req, res, next);
-  return;
-});
+router.delete(
+  "/product/rmv",
+  validateBodyMiddleware(CartProductDTO),
+  (req, res, next) => {
+    CartController.rmvProductFromCart(req, res, next);
+    return;
+  }
+);
 
 export default router;
