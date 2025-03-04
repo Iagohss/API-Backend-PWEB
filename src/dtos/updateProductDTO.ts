@@ -1,13 +1,13 @@
 import {
-  IsOptional,
   IsString,
   IsEnum,
   IsNumber,
   Min,
+  IsOptional,
 } from "class-validator";
 import { Caimento, Tamanho } from "@prisma/client";
 
-export class ProductFilterDTO {
+export class UpdateProductDTO {
   @IsOptional()
   @IsString({ message: "O nome deve ser uma string" })
   nome?: string;
@@ -41,12 +41,7 @@ export class ProductFilterDTO {
   tamanho?: Tamanho;
 
   @IsOptional()
-  @IsNumber({}, { message: "O preço mínimo deve ser um número" })
-  @Min(0, { message: "O preço mínimo deve ser um número positivo" })
-  minPrice?: number;
-
-  @IsOptional()
-  @IsNumber({}, { message: "O preço máximo deve ser um número" })
-  @Min(0, { message: "O preço máximo deve ser um número positivo" })
-  maxPrice?: number;
+  @IsNumber({}, { message: "O preço deve ser um número" })
+  @Min(0, { message: "Preço deve ser um número positivo" })
+  preco?: number;
 }

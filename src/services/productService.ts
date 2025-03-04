@@ -1,10 +1,10 @@
-import { Caimento, Tamanho } from "@prisma/client";
-import { ProductDTO } from "../dtos/productDTO";
+import { CreateProductDTO } from "../dtos/createProductDTO";
 import { Product } from "../models/product";
 import ProductRepository from "../repositories/productRepository";
 import ProductNotFoundError from "../errors/productNotFoundError";
 import InvalidInputError from "../errors/invalidInputError";
 import { ProductFilterDTO } from "../dtos/productFilterDTO";
+import { UpdateProductDTO } from "../dtos/updateProductDTO";
 
 class ProductService {
   private productRepository;
@@ -13,7 +13,7 @@ class ProductService {
     this.productRepository = new ProductRepository();
   }
 
-  async createProduct(productDTO: ProductDTO): Promise<Product> {
+  async createProduct(productDTO: CreateProductDTO): Promise<Product> {
     const product = new Product(
       productDTO.tipo,
       productDTO.nome,
@@ -61,9 +61,24 @@ class ProductService {
     return product;
   }
 
-  async updateProduct(id: string, data: Partial<Product>): Promise<Product> {
+  async updateProduct(id: string, data: UpdateProductDTO): Promise<Product> {
     const product = await this.productRepository.getProductById(id);
     if (!product) throw new ProductNotFoundError();
+
+    let updatedFields: any = {};
+    if (data.nome) updatedFields.nome = data.nome;
+    if (data.caimento) updatedFields.caimento = data.caimento;
+    if (data.cor) updatedFields.cor = data.cor;
+    if (data.material) updatedFields.material = data.material;
+    if (data.preco) updatedFields.preco = data.preco;
+    if (data.tamanho) updatedFields.tamanho = data.tamanho;
+    if (data.tipo) updatedFields.tipo = data.tipo;
+
+    if (Object.keys(updatedFields).length === 0)
+      throw new InvalidInputError(
+        "Nenhum campo válido para atualização foi fornecido"
+      );
+
     return await this.productRepository.updateProduct(id, data);
   }
 

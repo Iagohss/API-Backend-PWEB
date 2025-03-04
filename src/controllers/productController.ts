@@ -1,21 +1,26 @@
 import { Request, Response, NextFunction } from "express";
 import ProductService from "../services/productService";
-import { ProductDTO } from "../dtos/productDTO";
+import { CreateProductDTO } from "../dtos/createProductDTO";
 import InvalidInputError from "../errors/invalidInputError";
 import ProductNotFoundError from "../errors/productNotFoundError";
 import { ProductFilterDTO } from "../dtos/productFilterDTO";
+import { UpdateProductDTO } from "../dtos/updateProductDTO";
 
 const productService = new ProductService();
 
 class ProductController {
-  async createProduct(req: Request, res: Response, next: NextFunction) {
+  async createProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      const productDTO: ProductDTO = req.body;
+      const productDTO: CreateProductDTO = req.body;
       const product = await productService.createProduct(productDTO);
       res.status(201).json(product);
     } catch (error) {
       if (error instanceof InvalidInputError) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       } else {
         console.error(error);
         res.status(500).json({ message: "Erro interno do servidor" });
@@ -39,7 +44,9 @@ class ProductController {
   async getFilteredProducts(req: Request, res: Response, next: NextFunction) {
     try {
       const productFilterDTO: ProductFilterDTO = req.body;
-      const filteredProducts = await productService.getFilteredProducts(productFilterDTO);
+      const filteredProducts = await productService.getFilteredProducts(
+        productFilterDTO
+      );
       if (filteredProducts.length === 0) {
         return res.status(204).send();
       }
@@ -70,9 +77,10 @@ class ProductController {
 
   async updateProduct(req: Request, res: Response, next: NextFunction) {
     try {
+      const updateProductDTO: UpdateProductDTO = req.body;
       const product = await productService.updateProduct(
         req.params.id,
-        req.body
+        updateProductDTO
       );
       res.json(product);
     } catch (error) {

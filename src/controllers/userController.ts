@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import UserService from "../services/userService";
-import { UserDTO } from "../dtos/userDTO";
+import { CreateUserDTO } from "../dtos/createUserDTO";
 import InvalidInputError from "../errors/invalidInputError";
 import UserConflictError from "../errors/userConflictError";
 import UserNotFoundError from "../errors/userNotFoundError";
+import { UpdateUserDTO } from "../dtos/updateUserDTO";
 
 class UserController {
   private userService: UserService;
@@ -14,7 +15,7 @@ class UserController {
 
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const userDTO: UserDTO = req.body;
+      const userDTO: CreateUserDTO = req.body;
       const user = await this.userService.createUser(userDTO);
       res.status(201).json(user);
     } catch (error) {
@@ -62,13 +63,10 @@ class UserController {
   async updateUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { name, email, password, admin } = req.body;
+      const updateUserDTO: UpdateUserDTO = req.body;
       const updatedUser = await this.userService.updateUser(
         id,
-        name,
-        email,
-        password,
-        admin
+        updateUserDTO
       );
       res.status(200).json(updatedUser);
     } catch (error) {

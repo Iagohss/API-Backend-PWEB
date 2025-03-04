@@ -1,5 +1,11 @@
 import express from "express";
 import ProductController from "../controllers/productController";
+import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
+import { CreateProductDTO } from "../dtos/createProductDTO";
+import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
+import { GetIdDTO } from "../dtos/getIdDTO";
+import { ProductFilterDTO } from "../dtos/productFilterDTO";
+import { UpdateProductDTO } from "../dtos/updateProductDTO";
 
 const router = express.Router();
 
@@ -39,10 +45,14 @@ const router = express.Router();
  *                 message:
  *                   type: string
  */
-router.post("/", (req, res, next) => {
-  ProductController.createProduct(req, res, next);
-  return;
-});
+router.post(
+  "/",
+  validateBodyMiddleware(CreateProductDTO),
+  async (req, res, next) => {
+    await ProductController.createProduct(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -120,10 +130,14 @@ router.get("/", (req, res, next) => {
  *                 details:
  *                   type: string
  */
-router.post("/filter", (req, res, next) => {
-  ProductController.getFilteredProducts(req, res, next);
-  return;
-});
+router.post(
+  "/filter",
+  validateBodyMiddleware(ProductFilterDTO),
+  (req, res, next) => {
+    ProductController.getFilteredProducts(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -154,7 +168,7 @@ router.post("/filter", (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.get("/:id", (req, res, next) => {
+router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
   ProductController.getProductById(req, res, next);
   return;
 });
@@ -203,10 +217,15 @@ router.get("/:id", (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.put("/:id", (req, res, next) => {
-  ProductController.updateProduct(req, res, next);
-  return;
-});
+router.put(
+  "/:id",
+  validateParamsMiddleware(GetIdDTO),
+  validateBodyMiddleware(UpdateProductDTO),
+  (req, res, next) => {
+    ProductController.updateProduct(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -233,7 +252,7 @@ router.put("/:id", (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
   ProductController.deleteProduct(req, res, next);
   return;
 });
