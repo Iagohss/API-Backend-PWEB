@@ -1,3 +1,4 @@
+import { CartProductDTO } from "../dtos/cartProductDTO";
 import CartClosedError from "../errors/cartClosedError";
 import CartConflictError from "../errors/cartConflictError";
 import CartNotFoundError from "../errors/cartNotFoundError";
@@ -53,49 +54,41 @@ class CartService {
     return await this.cartRepository.deleteCart(id);
   }
 
-  async addProductToCart(
-    cartId: string,
-    productId: string,
-    quantidade: number
-  ) {
-    const product = await this.productRepository.getProductById(productId);
+  async addProductToCart(data: CartProductDTO) {
+    const product = await this.productRepository.getProductById(data.productId);
     if (!product) throw new ProductNotFoundError();
 
-    const cartResponse = await this.cartRepository.getCartById(cartId);
+    const cartResponse = await this.cartRepository.getCartById(data.cartId);
     if (!cartResponse) throw new CartNotFoundError();
     if (!cartResponse.isOpen) throw new CartClosedError();
-    if (quantidade < 0) throw new InvalidInputError();
+    if (data.quantidade < 0) throw new InvalidInputError();
 
     return await this.cartRepository.addProductToCart(
-      cartId,
-      productId,
-      quantidade
+      data.cartId,
+      data.productId,
+      data.quantidade
     );
   }
 
-  async rmvProductFromCart(
-    cartId: string,
-    productId: string,
-    quantidade: number
-  ) {
-    const cartResponse = await this.cartRepository.getCartById(cartId);
+  async rmvProductFromCart(data: CartProductDTO) {
+    const cartResponse = await this.cartRepository.getCartById(data.cartId);
     if (!cartResponse) throw new CartNotFoundError();
     if (!cartResponse.isOpen) throw new CartClosedError();
-    if (quantidade < 0) throw new InvalidInputError();
+    if (data.quantidade < 0) throw new InvalidInputError();
 
     const cartProduct = cartResponse.cartProducts.find(
-      (cp) => cp.productId === productId
+      (cp) => cp.productId === data.productId
     );
     if (!cartProduct) throw new ProductNotFoundError();
-    if (Math.abs(quantidade) > cartProduct.quantidade)
+    if (Math.abs(data.quantidade) > cartProduct.quantidade)
       throw new InvalidInputError(
         "Não é possível remover mais produtos do que há no carrinho."
       );
 
     return await this.cartRepository.rmvProductFromCart(
-      cartId,
-      productId,
-      quantidade
+      data.cartId,
+      data.productId,
+      data.quantidade
     );
   }
 }
