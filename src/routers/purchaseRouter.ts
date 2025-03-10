@@ -4,6 +4,9 @@ import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
 import { PurchaseDTO } from "../dtos/purchaseDTO";
 import { GetIdDTO } from "../dtos/getIdDTO";
 import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
+import { authenticate } from "../middlewares/authMiddleware";
+import { GetUserIdDTO } from "../dtos/getUserIdDTO";
+import { authenticateAdmin } from "../middlewares/adminAuthMiddleware";
 
 const router = express.Router();
 
@@ -19,6 +22,7 @@ const router = express.Router();
  * /api/purchases:
  *   post:
  *     summary: Cria uma nova compra
+ *     description: Necessita de autenticação (usuário logado).
  *     tags: [Compras]
  *     requestBody:
  *       required: true
@@ -59,15 +63,21 @@ const router = express.Router();
  *             example:
  *               message: "Já existe uma compra associada a esse carrinho"
  */
-router.post("/", validateBodyMiddleware(PurchaseDTO), (req, res, next) => {
-  PurchaseController.createPurchase(req, res, next);
-});
+router.post(
+  "/",
+  validateBodyMiddleware(PurchaseDTO),
+  authenticate,
+  (req, res, next) => {
+    PurchaseController.createPurchase(req, res, next);
+  }
+);
 
 /**
  * @swagger
  * /api/purchases:
  *   get:
  *     summary: Retorna todas as compras
+ *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Compras]
  *     responses:
  *       200:
@@ -81,7 +91,7 @@ router.post("/", validateBodyMiddleware(PurchaseDTO), (req, res, next) => {
  *       204:
  *         description: Nenhuma compra encontrada
  */
-router.get("/", (req, res, next) => {
+router.get("/", authenticateAdmin, (req, res, next) => {
   PurchaseController.getAllPurchases(req, res, next);
 });
 
@@ -90,6 +100,7 @@ router.get("/", (req, res, next) => {
  * /api/purchases/{id}:
  *   get:
  *     summary: Busca uma compra pelo ID
+ *     description: Necessita de autenticação (usuário logado).
  *     tags: [Compras]
  *     parameters:
  *       - in: path
@@ -111,15 +122,21 @@ router.get("/", (req, res, next) => {
  *             example:
  *               message: "Compra não encontrada"
  */
-router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
-  PurchaseController.getPurchaseById(req, res, next);
-});
+router.get(
+  "/:id",
+  authenticate,
+  validateParamsMiddleware(GetIdDTO),
+  (req, res, next) => {
+    PurchaseController.getPurchaseById(req, res, next);
+  }
+);
 
 /**
  * @swagger
  * /api/purchases/user/{userId}:
  *   get:
  *     summary: Retorna todas as compras de um usuário específico
+ *     description: Necessita de autenticação (usuário logado).
  *     tags: [Compras]
  *     parameters:
  *       - in: path
@@ -147,7 +164,8 @@ router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
  */
 router.get(
   "/user/:userId",
-  validateParamsMiddleware(GetIdDTO),
+  authenticate,
+  validateParamsMiddleware(GetUserIdDTO),
   (req, res, next) => {
     PurchaseController.getPurchasesByUserId(req, res, next);
   }
@@ -158,6 +176,7 @@ router.get(
  * /api/purchases/{id}:
  *   delete:
  *     summary: Deleta uma compra
+ *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Compras]
  *     parameters:
  *       - in: path
@@ -175,8 +194,13 @@ router.get(
  *             example:
  *               message: "Compra não encontrada"
  */
-router.delete("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
-  PurchaseController.deletePurchase(req, res, next);
-});
+router.delete(
+  "/:id",
+  authenticateAdmin,
+  validateParamsMiddleware(GetIdDTO),
+  (req, res, next) => {
+    PurchaseController.deletePurchase(req, res, next);
+  }
+);
 
 export default router;

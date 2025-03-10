@@ -1,5 +1,7 @@
 import express from "express";
 import UserController from "../controllers/userController";
+import { authenticateAdmin } from "../middlewares/adminAuthMiddleware";
+import { authenticate } from "../middlewares/authMiddleware";
 
 export const router = express();
 
@@ -58,6 +60,7 @@ router.post("/", (req, res, next) => {
  * /api/users/{id}:
  *   get:
  *     summary: Busca um usuário pelo ID
+ *     description: Necessita de autenticação (usuário logado).
  *     tags: [Usuários]
  *     parameters:
  *       - in: path
@@ -83,7 +86,7 @@ router.post("/", (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.get("/:id", (req, res, next) => {
+router.get("/:id", authenticate, (req, res, next) => {
   UserController.getUser(req, res, next);
   return;
 });
@@ -93,6 +96,7 @@ router.get("/:id", (req, res, next) => {
  * /api/users:
  *   get:
  *     summary: Retorna a lista de todos os usuários
+ *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Usuários]
  *     responses:
  *       200:
@@ -106,7 +110,7 @@ router.get("/:id", (req, res, next) => {
  *       204:
  *         description: Não há usuários cadastrados
  */
-router.get("/", (req, res, next) => {
+router.get("/", authenticateAdmin, (req, res, next) => {
   UserController.getAllUsers(req, res, next);
   return;
 });
@@ -116,6 +120,7 @@ router.get("/", (req, res, next) => {
  * /api/users/{id}:
  *   put:
  *     summary: Atualiza um usuário existente
+ *     description: Necessita de autenticação (usuário logado).
  *     tags: [Usuários]
  *     parameters:
  *       - in: path
@@ -164,7 +169,7 @@ router.get("/", (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.put("/:id", (req, res, next) => {
+router.put("/:id", authenticate, (req, res, next) => {
   UserController.updateUser(req, res, next);
   return;
 });
@@ -174,6 +179,7 @@ router.put("/:id", (req, res, next) => {
  * /api/users/{id}:
  *   delete:
  *     summary: Deleta um usuário
+ *     description: Necessita de autenticação (usuário logado).
  *     tags: [Usuários]
  *     parameters:
  *       - in: path
@@ -194,7 +200,7 @@ router.put("/:id", (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", authenticate, (req, res, next) => {
   UserController.deleteUser(req, res, next);
   return;
 });
