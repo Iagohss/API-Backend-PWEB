@@ -6,6 +6,7 @@ import { validateParamsMiddleware } from "../middlewares/validateParamsMiddlewar
 import { GetIdDTO } from "../dtos/getIdDTO";
 import { ProductFilterDTO } from "../dtos/productFilterDTO";
 import { UpdateProductDTO } from "../dtos/updateProductDTO";
+import { authenticateAdmin } from "../middlewares/adminAuthMiddleware";
 
 const router = express.Router();
 
@@ -21,6 +22,7 @@ const router = express.Router();
  * /api/products:
  *   post:
  *     summary: Cria um novo produto
+ *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Produtos]
  *     requestBody:
  *       required: true
@@ -47,6 +49,7 @@ const router = express.Router();
  */
 router.post(
   "/",
+  authenticateAdmin,
   validateBodyMiddleware(CreateProductDTO),
   async (req, res, next) => {
     await ProductController.createProduct(req, res, next);
@@ -178,6 +181,7 @@ router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
  * /api/products/{id}:
  *   put:
  *     summary: Atualiza um produto existente
+ *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Produtos]
  *     parameters:
  *       - in: path
@@ -219,6 +223,7 @@ router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
  */
 router.put(
   "/:id",
+  authenticateAdmin,
   validateParamsMiddleware(GetIdDTO),
   validateBodyMiddleware(UpdateProductDTO),
   (req, res, next) => {
@@ -232,6 +237,7 @@ router.put(
  * /api/products/{id}:
  *   delete:
  *     summary: Deleta um produto
+ *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Produtos]
  *     parameters:
  *       - in: path
@@ -252,9 +258,14 @@ router.put(
  *                 message:
  *                   type: string
  */
-router.delete("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
-  ProductController.deleteProduct(req, res, next);
-  return;
-});
+router.delete(
+  "/:id",
+  authenticateAdmin,
+  validateParamsMiddleware(GetIdDTO),
+  (req, res, next) => {
+    ProductController.deleteProduct(req, res, next);
+    return;
+  }
+);
 
 export default router;

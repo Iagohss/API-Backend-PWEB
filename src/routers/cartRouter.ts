@@ -5,6 +5,9 @@ import { validateParamsMiddleware } from "../middlewares/validateParamsMiddlewar
 import { GetIdDTO } from "../dtos/getIdDTO";
 import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
 import { CartProductDTO } from "../dtos/cartProductDTO";
+import { GetUserIdDTO } from "../dtos/getUserIdDTO";
+import { authenticateAdmin } from "../middlewares/adminAuthMiddleware";
+import { authenticate } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
@@ -20,6 +23,7 @@ const router = express.Router();
  * /api/carts:
  *   get:
  *     summary: Retorna todos os carrinhos
+ *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Carrinhos]
  *     responses:
  *       200:
@@ -33,7 +37,7 @@ const router = express.Router();
  *       204:
  *         description: Nenhum carrinho encontrado
  */
-router.get("/", (req, res, next) => {
+router.get("/", authenticateAdmin, (req, res, next) => {
   cartController.getAllCarts(req, res, next);
   return;
 });
@@ -43,6 +47,7 @@ router.get("/", (req, res, next) => {
  * /api/carts/{id}:
  *   get:
  *     summary: Busca um carrinho pelo ID
+ *     description: Necessita de autenticação (usuário logado).
  *     tags: [Carrinhos]
  *     parameters:
  *       - in: path
@@ -69,16 +74,22 @@ router.get("/", (req, res, next) => {
  *                   type: string
  *                   example: 'Carrinho não encontrado'
  */
-router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
-  CartController.getCartById(req, res, next);
-  return;
-});
+router.get(
+  "/:id",
+  authenticate,
+  validateParamsMiddleware(GetIdDTO),
+  (req, res, next) => {
+    CartController.getCartById(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
  * /api/carts/user/{userId}:
  *   get:
  *     summary: Busca o carrinho aberto de um usuário pelo seu ID
+ *     description: Necessita de autenticação (usuário logado).
  *     tags: [Carrinhos]
  *     parameters:
  *       - in: path
@@ -115,7 +126,8 @@ router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
  */
 router.get(
   "/user/:userId",
-  validateParamsMiddleware(GetIdDTO),
+  authenticate,
+  validateParamsMiddleware(GetUserIdDTO),
   (req, res, next) => {
     CartController.getOpenCartByUser(req, res, next);
     return;
@@ -127,6 +139,7 @@ router.get(
  * /api/carts/close/{id}:
  *   put:
  *     summary: Fecha um carrinho
+ *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Carrinhos]
  *     parameters:
  *       - in: path
@@ -154,6 +167,7 @@ router.get(
  */
 router.put(
   "/close/:id",
+  authenticateAdmin,
   validateParamsMiddleware(GetIdDTO),
   (req, res, next) => {
     CartController.closeCart(req, res, next);
@@ -166,6 +180,7 @@ router.put(
  * /api/carts/{id}:
  *   delete:
  *     summary: Deleta um carrinho
+ *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Carrinhos]
  *     parameters:
  *       - in: path
@@ -187,16 +202,22 @@ router.put(
  *                   type: string
  *                   example: 'Carrinho não encontrado'
  */
-router.delete("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
-  CartController.deleteCart(req, res, next);
-  return;
-});
+router.delete(
+  "/:id",
+  authenticateAdmin,
+  validateParamsMiddleware(GetIdDTO),
+  (req, res, next) => {
+    CartController.deleteCart(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
  * /api/carts/product/add:
  *   put:
  *     summary: Adiciona produtos ao carrinho
+ *     description: Necessita de autenticação (usuário logado).
  *     tags: [Carrinhos]
  *     requestBody:
  *       required: true
@@ -263,6 +284,7 @@ router.delete("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
  */
 router.put(
   "/product/add",
+  authenticate,
   validateBodyMiddleware(CartProductDTO),
   (req, res, next) => {
     CartController.addProductToCart(req, res, next);
@@ -275,6 +297,7 @@ router.put(
  * /api/carts/product/rmv:
  *   delete:
  *     summary: Remove produtos do carrinho
+ *     description: Necessita de autenticação (usuário logado).
  *     tags: [Carrinhos]
  *     requestBody:
  *       required: true
@@ -327,6 +350,7 @@ router.put(
  */
 router.delete(
   "/product/rmv",
+  authenticate,
   validateBodyMiddleware(CartProductDTO),
   (req, res, next) => {
     CartController.rmvProductFromCart(req, res, next);

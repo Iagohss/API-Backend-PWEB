@@ -16,6 +16,17 @@ export const swaggerSchemas = {
           admin: false,
         },
       },
+      LoginDTO: {
+        type: "object",
+        properties: {
+          email: { type: "string" },
+          password: { type: "string" },
+        },
+        example: {
+          email: "jondoe@email.com",
+          password: "123",
+        },
+      },
       UserResponse: {
         type: "object",
         properties: {

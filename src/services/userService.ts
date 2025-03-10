@@ -6,6 +6,7 @@ import userNotFoundError from "../errors/userNotFoundError";
 import { User } from "../models/user";
 import CartRepository from "../repositories/cartRepository";
 import UserRepository from "../repositories/userRepository";
+import { hashPassword } from "../utils/auth";
 
 class UserService {
   private userRepository;
@@ -22,10 +23,12 @@ class UserService {
     );
     if (existingUser) throw new UserConflictError();
 
+    const hashedPassowrd = await hashPassword(userDTO.password);
+
     const user = new User(
       userDTO.name,
       userDTO.email,
-      userDTO.password,
+      hashedPassowrd,
       userDTO.admin
     );
     const newUser = await this.userRepository.createUser(user);
