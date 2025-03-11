@@ -48,7 +48,8 @@ class ProductController {
     try {
       const paginationDTO: PaginationDTO =
         req.query as unknown as PaginationDTO;
-      const productFilterDTO: ProductFilterDTO = req.body;
+      const productFilterDTO: ProductFilterDTO =
+        req.query as unknown as ProductFilterDTO;
       const filteredProducts = await productService.getFilteredProducts(
         paginationDTO,
         productFilterDTO

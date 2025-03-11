@@ -6,7 +6,7 @@ export function validateQueryMiddleware<T extends object>(
   dtoClass: new () => T
 ) {
   return async (
-    req: Request<any, any, any, T>,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -24,7 +24,7 @@ export function validateQueryMiddleware<T extends object>(
       return;
     }
 
-    req.query = dtoInstance;
+    (req.query as any) = dtoInstance;
     next();
   };
 }

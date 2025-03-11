@@ -98,26 +98,75 @@ router.get("/", validateQueryMiddleware(PaginationDTO), (req, res, next) => {
 /**
  * @swagger
  * /api/products/filter:
- *   post:
+ *   get:
  *     summary: Retorna produtos filtrados com base nos critérios fornecidos
  *     tags: [Produtos]
  *     parameters:
  *       - in: query
  *         name: offset
- *         required: true
+ *         required: false
  *         schema:
  *           type: number
+ *           minimum: 0
+ *           default: 0
  *       - in: query
  *         name: limit
- *         required: true
+ *         required: false
  *         schema:
  *           type: number
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: "#/components/schemas/ProductFilterDTO"
+ *           minimum: 0
+ *           maximum: 500
+ *           default: 500
+ *       - in: query
+ *         name: nome
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: "Camiseta"
+ *       - in: query
+ *         name: cor
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: "Preto"
+ *       - in: query
+ *         name: tipo
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: "Camiseta"
+ *       - in: query
+ *         name: caimento
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [Fit, Slim, SlimFit, Regular, Oversized, Baggy, Reta]
+ *           example: "Regular"
+ *       - in: query
+ *         name: material
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: "Algodão"
+ *       - in: query
+ *         name: tamanho
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [PP, P, M, G, GG]
+ *           example: "M"
+ *       - in: query
+ *         name: minPrice
+ *         required: false
+ *         schema:
+ *           type: number
+ *           example: 50.0
+ *       - in: query
+ *         name: maxPrice
+ *         required: false
+ *         schema:
+ *           type: number
+ *           example: 150.0
  *     responses:
  *       200:
  *         description: Lista de produtos retornada com sucesso
@@ -126,7 +175,7 @@ router.get("/", validateQueryMiddleware(PaginationDTO), (req, res, next) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/ProductDTO"
+ *                 $ref: '#/components/schemas/ProductDTO'
  *       204:
  *         description: Nenhum produto encontrado para os filtros fornecidos
  *       400:
@@ -159,10 +208,10 @@ router.get("/", validateQueryMiddleware(PaginationDTO), (req, res, next) => {
  *                 details:
  *                   type: string
  */
-router.post(
+router.get(
   "/filter",
   validateQueryMiddleware(PaginationDTO),
-  validateBodyMiddleware(ProductFilterDTO),
+  validateQueryMiddleware(ProductFilterDTO),
   (req, res, next) => {
     ProductController.getFilteredProducts(req, res, next);
     return;
