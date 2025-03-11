@@ -5,6 +5,7 @@ import ProductNotFoundError from "../errors/productNotFoundError";
 import InvalidInputError from "../errors/invalidInputError";
 import { ProductFilterDTO } from "../dtos/productFilterDTO";
 import { UpdateProductDTO } from "../dtos/updateProductDTO";
+import { PaginationDTO } from "../dtos/paginationDTO";
 
 class ProductService {
   private productRepository;
@@ -26,11 +27,17 @@ class ProductService {
     return await this.productRepository.createProduct(product);
   }
 
-  async getAllProducts(): Promise<Product[]> {
-    return await this.productRepository.getAllProducts();
+  async getAllProducts(paginationDTO: PaginationDTO): Promise<Product[]> {
+    return await this.productRepository.getAllProducts(
+      paginationDTO.offset,
+      paginationDTO.limit
+    );
   }
 
-  async getFilteredProducts(filters: ProductFilterDTO): Promise<Product[]> {
+  async getFilteredProducts(
+    paginationDTO: PaginationDTO,
+    filters: ProductFilterDTO
+  ): Promise<Product[]> {
     if (!filters || Object.keys(filters).length === 0) {
       throw new InvalidInputError("Pelo menos um filtro deve ser fornecido.");
     }
@@ -52,7 +59,11 @@ class ProductService {
       }
     }
 
-    return await this.productRepository.getFilteredProducts(filters);
+    return await this.productRepository.getFilteredProducts(
+      paginationDTO.offset,
+      paginationDTO.limit,
+      filters
+    );
   }
 
   async getProductById(id: string): Promise<Product> {

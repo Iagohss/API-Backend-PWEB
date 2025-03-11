@@ -1,11 +1,6 @@
-import {
-  IsOptional,
-  IsString,
-  IsEnum,
-  IsNumber,
-  Min,
-} from "class-validator";
+import { IsOptional, IsString, IsEnum, IsNumber, Min } from "class-validator";
 import { Caimento, Tamanho } from "@prisma/client";
+import { Type } from "class-transformer";
 
 export class ProductFilterDTO {
   @IsOptional()
@@ -41,11 +36,13 @@ export class ProductFilterDTO {
   tamanho?: Tamanho;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber({}, { message: "O preço mínimo deve ser um número" })
   @Min(0, { message: "O preço mínimo deve ser um número positivo" })
   minPrice?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber({}, { message: "O preço máximo deve ser um número" })
   @Min(0, { message: "O preço máximo deve ser um número positivo" })
   maxPrice?: number;

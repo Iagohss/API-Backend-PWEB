@@ -9,6 +9,7 @@ import PurchaseNotFoundError from "../errors/purchaseNotFoundError";
 import UserNotFoundError from "../errors/userNotFoundError";
 import InvalidInputError from "../errors/invalidInputError";
 import { PurchaseDTO } from "../dtos/purchaseDTO";
+import { PaginationDTO } from "../dtos/paginationDTO";
 
 const purchaseService = new PurchaseService();
 
@@ -56,7 +57,10 @@ class PurchaseController {
 
   async getPurchasesByUserId(req: Request, res: Response, next: NextFunction) {
     try {
+      const paginationDTO: PaginationDTO =
+        req.query as unknown as PaginationDTO;
       const purchases = await purchaseService.getPurchasesByUserId(
+        paginationDTO,
         req.params.userId
       );
       if (purchases.length === 0) {
@@ -75,7 +79,9 @@ class PurchaseController {
 
   async getAllPurchases(req: Request, res: Response, next: NextFunction) {
     try {
-      const purchases = await purchaseService.getAllPurchases();
+      const paginationDTO: PaginationDTO =
+        req.query as unknown as PaginationDTO;
+      const purchases = await purchaseService.getAllPurchases(paginationDTO);
       if (purchases.length === 0) {
         return res.status(204).send();
       }

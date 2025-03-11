@@ -24,17 +24,23 @@ class ProductRepository {
     }
   }
 
-  async getAllProducts(): Promise<Product[]> {
+  async getAllProducts(offset: number, limit: number): Promise<Product[]> {
     try {
-      return await prisma.product.findMany();
+      return await prisma.product.findMany({ skip: offset, take: limit });
     } catch (error) {
       throw new InvalidInputError("Erro ao buscar os produtos");
     }
   }
 
-  async getFilteredProducts(filters: ProductFilter): Promise<Product[]> {
+  async getFilteredProducts(
+    offset: number,
+    limit: number,
+    filters: ProductFilter
+  ): Promise<Product[]> {
     try {
       return await prisma.product.findMany({
+        skip: offset,
+        take: limit,
         where: {
           nome: filters.nome
             ? { contains: filters.nome, mode: "insensitive" }

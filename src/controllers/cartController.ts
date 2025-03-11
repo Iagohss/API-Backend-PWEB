@@ -7,6 +7,7 @@ import InvalidInputError from "../errors/invalidInputError";
 import CartConflictError from "../errors/cartConflictError";
 import CartClosedError from "../errors/cartClosedError";
 import { CartProductDTO } from "../dtos/cartProductDTO";
+import { PaginationDTO } from "../dtos/paginationDTO";
 
 const cartService = new CartService();
 
@@ -27,7 +28,9 @@ class CartController {
 
   async getAllCarts(req: Request, res: Response, next: NextFunction) {
     try {
-      const carts = await cartService.getAllCarts();
+      const paginationDTO: PaginationDTO =
+        req.query as unknown as PaginationDTO;
+      const carts = await cartService.getAllCarts(paginationDTO);
       if (carts.length === 0) {
         return res.status(204).send();
       }

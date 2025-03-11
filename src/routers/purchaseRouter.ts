@@ -2,11 +2,13 @@ import express from "express";
 import PurchaseController from "../controllers/purchaseController";
 import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
 import { PurchaseDTO } from "../dtos/purchaseDTO";
-import { GetIdDTO } from "../dtos/getIdDTO";
+import { GetIdDTO } from "../dtos/idDTO";
 import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
 import { authenticate } from "../middlewares/authMiddleware";
-import { GetUserIdDTO } from "../dtos/getUserIdDTO";
+import { GetUserIdDTO } from "../dtos/userIdDTO";
 import { authenticateAdmin } from "../middlewares/adminAuthMiddleware";
+import { PaginationDTO } from "../dtos/paginationDTO";
+import { validateQueryMiddleware } from "../middlewares/validateQueryMiddleware";
 
 const router = express.Router();
 
@@ -24,6 +26,8 @@ const router = express.Router();
  *     summary: Cria uma nova compra
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Compras]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -79,6 +83,19 @@ router.post(
  *     summary: Retorna todas as compras
  *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Compras]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: offset
+ *         required: true
+ *         schema:
+ *           type: number
+ *       - in: path
+ *         name: limit
+ *         required: true
+ *         schema:
+ *           type: number
  *     responses:
  *       200:
  *         description: Lista de compras retornada com sucesso
@@ -91,9 +108,14 @@ router.post(
  *       204:
  *         description: Nenhuma compra encontrada
  */
-router.get("/", authenticateAdmin, (req, res, next) => {
-  PurchaseController.getAllPurchases(req, res, next);
-});
+router.get(
+  "/",
+  authenticateAdmin,
+  validateParamsMiddleware(PaginationDTO),
+  (req, res, next) => {
+    PurchaseController.getAllPurchases(req, res, next);
+  }
+);
 
 /**
  * @swagger
@@ -102,6 +124,8 @@ router.get("/", authenticateAdmin, (req, res, next) => {
  *     summary: Busca uma compra pelo ID
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Compras]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -138,12 +162,24 @@ router.get(
  *     summary: Retorna todas as compras de um usuário específico
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Compras]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userId
  *         required: true
  *         schema:
  *           type: string
+ *       - in: query
+ *         name: offset
+ *         required: true
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: limit
+ *         required: true
+ *         schema:
+ *           type: number
  *     responses:
  *       200:
  *         description: Compras do usuário encontradas
@@ -166,6 +202,7 @@ router.get(
   "/user/:userId",
   authenticate,
   validateParamsMiddleware(GetUserIdDTO),
+  validateQueryMiddleware(PaginationDTO),
   (req, res, next) => {
     PurchaseController.getPurchasesByUserId(req, res, next);
   }
@@ -178,6 +215,8 @@ router.get(
  *     summary: Deleta uma compra
  *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Compras]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

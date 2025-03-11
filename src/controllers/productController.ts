@@ -5,6 +5,7 @@ import InvalidInputError from "../errors/invalidInputError";
 import ProductNotFoundError from "../errors/productNotFoundError";
 import { ProductFilterDTO } from "../dtos/productFilterDTO";
 import { UpdateProductDTO } from "../dtos/updateProductDTO";
+import { PaginationDTO } from "../dtos/paginationDTO";
 
 const productService = new ProductService();
 
@@ -30,7 +31,9 @@ class ProductController {
 
   async getAllProducts(req: Request, res: Response, next: NextFunction) {
     try {
-      const products = await productService.getAllProducts();
+      const paginationDTO: PaginationDTO =
+        req.query as unknown as PaginationDTO;
+      const products = await productService.getAllProducts(paginationDTO);
       if (products.length === 0) {
         return res.status(204).send();
       }
@@ -43,8 +46,12 @@ class ProductController {
 
   async getFilteredProducts(req: Request, res: Response, next: NextFunction) {
     try {
-      const productFilterDTO: ProductFilterDTO = req.body;
+      const paginationDTO: PaginationDTO =
+        req.query as unknown as PaginationDTO;
+      const productFilterDTO: ProductFilterDTO =
+        req.query as unknown as ProductFilterDTO;
       const filteredProducts = await productService.getFilteredProducts(
+        paginationDTO,
         productFilterDTO
       );
       if (filteredProducts.length === 0) {
