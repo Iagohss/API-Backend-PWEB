@@ -1,5 +1,12 @@
 export const swaggerSchemas = {
   components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
     schemas: {
       UserDTO: {
         type: "object",

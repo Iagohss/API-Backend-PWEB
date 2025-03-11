@@ -3,10 +3,12 @@ import ProductController from "../controllers/productController";
 import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
 import { CreateProductDTO } from "../dtos/createProductDTO";
 import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
-import { GetIdDTO } from "../dtos/getIdDTO";
+import { GetIdDTO } from "../dtos/idDTO";
 import { ProductFilterDTO } from "../dtos/productFilterDTO";
 import { UpdateProductDTO } from "../dtos/updateProductDTO";
 import { authenticateAdmin } from "../middlewares/adminAuthMiddleware";
+import { PaginationDTO } from "../dtos/paginationDTO";
+import { validateQueryMiddleware } from "../middlewares/validateQueryMiddleware";
 
 const router = express.Router();
 
@@ -24,6 +26,8 @@ const router = express.Router();
  *     summary: Cria um novo produto
  *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Produtos]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -63,6 +67,17 @@ router.post(
  *   get:
  *     summary: Retorna todos os produtos
  *     tags: [Produtos]
+ *     parameters:
+ *       - in: query
+ *         name: offset
+ *         required: true
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: limit
+ *         required: true
+ *         schema:
+ *           type: number
  *     responses:
  *       200:
  *         description: Lista de produtos retornada com sucesso
@@ -75,7 +90,7 @@ router.post(
  *       204:
  *         description: Nenhum produto encontrado
  */
-router.get("/", (req, res, next) => {
+router.get("/", validateQueryMiddleware(PaginationDTO), (req, res, next) => {
   ProductController.getAllProducts(req, res, next);
   return;
 });
@@ -86,6 +101,17 @@ router.get("/", (req, res, next) => {
  *   post:
  *     summary: Retorna produtos filtrados com base nos critérios fornecidos
  *     tags: [Produtos]
+ *     parameters:
+ *       - in: query
+ *         name: offset
+ *         required: true
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: limit
+ *         required: true
+ *         schema:
+ *           type: number
  *     requestBody:
  *       required: true
  *       content:
@@ -135,6 +161,7 @@ router.get("/", (req, res, next) => {
  */
 router.post(
   "/filter",
+  validateQueryMiddleware(PaginationDTO),
   validateBodyMiddleware(ProductFilterDTO),
   (req, res, next) => {
     ProductController.getFilteredProducts(req, res, next);
@@ -183,6 +210,8 @@ router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
  *     summary: Atualiza um produto existente
  *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Produtos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -239,6 +268,8 @@ router.put(
  *     summary: Deleta um produto
  *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Produtos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

@@ -2,6 +2,9 @@ import express from "express";
 import UserController from "../controllers/userController";
 import { authenticateAdmin } from "../middlewares/adminAuthMiddleware";
 import { authenticate } from "../middlewares/authMiddleware";
+import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
+import { PaginationDTO } from "../dtos/paginationDTO";
+import { validateQueryMiddleware } from "../middlewares/validateQueryMiddleware";
 
 export const router = express();
 
@@ -62,6 +65,8 @@ router.post("/", (req, res, next) => {
  *     summary: Busca um usuário pelo ID
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Usuários]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -98,6 +103,19 @@ router.get("/:id", authenticate, (req, res, next) => {
  *     summary: Retorna a lista de todos os usuários
  *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Usuários]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: offset
+ *         required: true
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: limit
+ *         required: true
+ *         schema:
+ *           type: number
  *     responses:
  *       200:
  *         description: Lista de usuários retornada com sucesso
@@ -110,10 +128,15 @@ router.get("/:id", authenticate, (req, res, next) => {
  *       204:
  *         description: Não há usuários cadastrados
  */
-router.get("/", authenticateAdmin, (req, res, next) => {
-  UserController.getAllUsers(req, res, next);
-  return;
-});
+router.get(
+  "/",
+  authenticateAdmin,
+  validateQueryMiddleware(PaginationDTO),
+  (req, res, next) => {
+    UserController.getAllUsers(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -122,6 +145,8 @@ router.get("/", authenticateAdmin, (req, res, next) => {
  *     summary: Atualiza um usuário existente
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Usuários]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -181,6 +206,8 @@ router.put("/:id", authenticate, (req, res, next) => {
  *     summary: Deleta um usuário
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Usuários]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

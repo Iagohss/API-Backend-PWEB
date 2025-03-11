@@ -5,6 +5,7 @@ import InvalidInputError from "../errors/invalidInputError";
 import UserConflictError from "../errors/userConflictError";
 import UserNotFoundError from "../errors/userNotFoundError";
 import { UpdateUserDTO } from "../dtos/updateUserDTO";
+import { PaginationDTO } from "../dtos/paginationDTO";
 
 class UserController {
   private userService: UserService;
@@ -49,7 +50,8 @@ class UserController {
 
   async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const users = await this.userService.getAllUsers();
+      const paginationDTO: PaginationDTO = req.query as unknown as PaginationDTO;
+      const users = await this.userService.getAllUsers(paginationDTO);
       if (users.length === 0) {
         return res.status(204).send();
       }
@@ -64,10 +66,7 @@ class UserController {
     try {
       const { id } = req.params;
       const updateUserDTO: UpdateUserDTO = req.body;
-      const updatedUser = await this.userService.updateUser(
-        id,
-        updateUserDTO
-      );
+      const updatedUser = await this.userService.updateUser(id, updateUserDTO);
       res.status(200).json(updatedUser);
     } catch (error) {
       if (error instanceof InvalidInputError) {

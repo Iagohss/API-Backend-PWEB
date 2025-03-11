@@ -20,8 +20,11 @@ class CartRepository {
     }
   }
 
-  async getAllCarts(): Promise<Cart[]> {
-    return await prisma.cart.findMany();
+  async getAllCarts(offset: number, limit: number): Promise<Cart[]> {
+    return await prisma.cart.findMany({
+      skip: offset,
+      take: limit,
+    });
   }
 
   async getCartById(id: string): Promise<CartResponse | null> {
@@ -58,7 +61,7 @@ class CartRepository {
     }
   }
 
-  async getOpenAllCartsByUser(userId: string): Promise<Cart[]> {
+  async getAllCartsByUser(userId: string): Promise<Cart[]> {
     try {
       const carts = await prisma.cart.findMany({
         where: {

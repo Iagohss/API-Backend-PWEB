@@ -44,8 +44,11 @@ class UserRepository {
     }
   }
 
-  async getAllUsers(): Promise<User[]> {
-    return prisma.user.findMany();
+  async getAllUsers(offset: number, limit: number): Promise<User[]> {
+    return prisma.user.findMany({
+      skip: offset,
+      take: limit,
+    });
   }
 
   async updateUser(id: string, user: User): Promise<User> {
