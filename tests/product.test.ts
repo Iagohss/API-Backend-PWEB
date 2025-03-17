@@ -23,6 +23,7 @@ describe("Product Controller - Testes de Integração", () => {
       admin: true,
     };
 
+    await prisma.cart.deleteMany();
     await prisma.user.deleteMany({
       where: { email: adminUser.email },
     });
