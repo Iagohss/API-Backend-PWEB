@@ -1,13 +1,18 @@
 import axios from "axios";
 import prisma from "../src/utils/prisma";
 import { hashPassword } from "../src/utils/auth";
+import app from "../src/app";
+import http from "http";
 
 const API_URL = "http://localhost:3000/api";
 
+let server: http.Server;
 let token: string;
 
 describe("Product Controller - Testes de Integração", () => {
   beforeAll(async () => {
+    server = app.listen(3000);
+
     const adminUser = {
       name: "admin user",
       email: "admin@email.com",
@@ -43,6 +48,7 @@ describe("Product Controller - Testes de Integração", () => {
 
   afterAll(async () => {
     await prisma.$disconnect();
+    server.close();
   });
 
   describe("GET /", () => {
