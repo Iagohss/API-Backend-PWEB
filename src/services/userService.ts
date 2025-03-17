@@ -45,6 +45,12 @@ class UserService {
     return user;
   }
 
+  async getUserByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) throw new userNotFoundError();
+    return user;
+  }
+
   async getAllUsers(): Promise<User[]> {
     return await this.userRepository.getAllUsers();
   }

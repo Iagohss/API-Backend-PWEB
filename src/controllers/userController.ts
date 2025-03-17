@@ -47,6 +47,22 @@ class UserController {
     }
   }
 
+  async getUserByEmail(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.params;
+      const user = await this.userService.getUserByEmail(email);
+
+      res.status(200).json(user);
+    } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        return res.status(404).json({ message: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
+      }
+    }
+  }
+
   async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
       const users = await this.userService.getAllUsers();
@@ -64,10 +80,7 @@ class UserController {
     try {
       const { id } = req.params;
       const updateUserDTO: UpdateUserDTO = req.body;
-      const updatedUser = await this.userService.updateUser(
-        id,
-        updateUserDTO
-      );
+      const updatedUser = await this.userService.updateUser(id, updateUserDTO);
       res.status(200).json(updatedUser);
     } catch (error) {
       if (error instanceof InvalidInputError) {

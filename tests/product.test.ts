@@ -1,9 +1,42 @@
 import axios from "axios";
 import prisma from "../src/utils/prisma";
+import { hashPassword } from "../src/utils/auth";
 
-const API_URL = "http://localhost:3000/api/products/";
+const API_URL = "http://localhost:3000/api";
+
+let token: string;
 
 describe("Product Controller - Testes de Integração", () => {
+  beforeAll(async () => {
+    const adminUser = {
+      name: "admin user",
+      email: "admin@email.com",
+      password: "admin123",
+      admin: true,
+    };
+
+    await prisma.user.deleteMany({
+      where: { email: adminUser.email },
+    });
+
+    const hashedPassword = await hashPassword(adminUser.password);
+    await prisma.user.create({
+      data: {
+        name: adminUser.name,
+        email: adminUser.email,
+        password: hashedPassword,
+        admin: adminUser.admin,
+      },
+    });
+
+    const loginResponse = await axios.post(`${API_URL}/auth/login/`, {
+      email: adminUser.email,
+      password: adminUser.password,
+    });
+
+    token = loginResponse.data.token;
+  });
+
   beforeEach(async () => {
     await prisma.product.deleteMany();
   });
@@ -14,7 +47,7 @@ describe("Product Controller - Testes de Integração", () => {
 
   describe("GET /", () => {
     it("deve retornar uma lista vazia quando não há produtos", async () => {
-      const response = await axios.get(API_URL);
+      const response = await axios.get(`${API_URL}/products/`);
       expect(response.status).toBe(204);
       expect(response.data).toEqual("");
     });
@@ -32,7 +65,7 @@ describe("Product Controller - Testes de Integração", () => {
         },
       });
 
-      const response = await axios.get(API_URL);
+      const response = await axios.get(`${API_URL}/products/`);
 
       expect(response.status).toBe(200);
       expect(response.data.length).toBe(1);
@@ -52,7 +85,11 @@ describe("Product Controller - Testes de Integração", () => {
         preco: 129.99,
       };
 
-      const response = await axios.post(API_URL, newProduct);
+      const response = await axios.post(`${API_URL}/products/`, newProduct, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       expect(response.status).toBe(201);
       expect(response.data).toMatchObject(newProduct);
@@ -64,7 +101,13 @@ describe("Product Controller - Testes de Integração", () => {
         preco: -10,
       };
 
-      await expect(axios.post(API_URL, invalidProduct)).rejects.toThrowError(
+      await expect(
+        axios.post(`${API_URL}/products/`, invalidProduct, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).rejects.toThrow(
         expect.objectContaining({
           response: expect.objectContaining({
             status: 400,
