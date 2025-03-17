@@ -4,14 +4,17 @@ import { hashPassword } from "../src/utils/auth";
 import app from "../src/app";
 import http from "http";
 
-const API_URL = "http://localhost:3000/api";
+
 
 let server: http.Server;
 let token: string;
+const PORT = process.env.PORT || 3000; 
+
+const API_URL = `http://localhost:${PORT}/api`;
 
 describe("Product Controller - Testes de Integração", () => {
   beforeAll(async () => {
-    server = app.listen(3000);
+    server = app.listen(PORT);
 
     const adminUser = {
       name: "admin user",
@@ -40,7 +43,7 @@ describe("Product Controller - Testes de Integração", () => {
     });
 
     token = loginResponse.data.token;
-  });
+  }, 20000);
 
   beforeEach(async () => {
     await prisma.product.deleteMany();
