@@ -8,6 +8,8 @@ import { validateParamsMiddleware } from "../middlewares/validateParamsMiddlewar
 import { GetIdDTO } from "../dtos/getIdDTO";
 import { UpdateUserDTO } from "../dtos/updateUserDTO";
 import { GetEmailDTO } from "../dtos/getEmailDTO";
+import { PaginationDTO } from "../dtos/paginationDTO";
+import { validateQueryMiddleware } from "../middlewares/validateQueryMiddleware";
 
 export const router = express();
 
@@ -68,6 +70,8 @@ router.post("/", validateBodyMiddleware(CreateUserDTO), (req, res, next) => {
  *     summary: Busca um usuário pelo ID
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Usuários]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -150,6 +154,19 @@ router.get(
  *     summary: Retorna a lista de todos os usuários
  *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Usuários]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: offset
+ *         required: true
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: limit
+ *         required: true
+ *         schema:
+ *           type: number
  *     responses:
  *       200:
  *         description: Lista de usuários retornada com sucesso
@@ -162,10 +179,15 @@ router.get(
  *       204:
  *         description: Não há usuários cadastrados
  */
-router.get("/", authenticateAdmin, (req, res, next) => {
-  UserController.getAllUsers(req, res, next);
-  return;
-});
+router.get(
+  "/",
+  authenticateAdmin,
+  validateQueryMiddleware(PaginationDTO),
+  (req, res, next) => {
+    UserController.getAllUsers(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -174,6 +196,8 @@ router.get("/", authenticateAdmin, (req, res, next) => {
  *     summary: Atualiza um usuário existente
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Usuários]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -239,6 +263,8 @@ router.put(
  *     summary: Deleta um usuário
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Usuários]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

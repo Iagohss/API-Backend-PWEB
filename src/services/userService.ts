@@ -1,4 +1,5 @@
 import { CreateUserDTO } from "../dtos/createUserDTO";
+import { PaginationDTO } from "../dtos/paginationDTO";
 import { UpdateUserDTO } from "../dtos/updateUserDTO";
 import InvalidInputError from "../errors/invalidInputError";
 import UserConflictError from "../errors/userConflictError";
@@ -51,8 +52,11 @@ class UserService {
     return user;
   }
 
-  async getAllUsers(): Promise<User[]> {
-    return await this.userRepository.getAllUsers();
+  async getAllUsers(paginationDTO: PaginationDTO): Promise<User[]> {
+    return await this.userRepository.getAllUsers(
+      paginationDTO.offset,
+      paginationDTO.limit
+    );
   }
 
   async updateUser(id: string, data: UpdateUserDTO): Promise<User> {

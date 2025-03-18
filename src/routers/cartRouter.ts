@@ -2,12 +2,14 @@ import express from "express";
 import CartController from "../controllers/cartController";
 import cartController from "../controllers/cartController";
 import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
-import { GetIdDTO } from "../dtos/getIdDTO";
+import { GetIdDTO } from "../dtos/idDTO";
 import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
 import { CartProductDTO } from "../dtos/cartProductDTO";
-import { GetUserIdDTO } from "../dtos/getUserIdDTO";
+import { GetUserIdDTO } from "../dtos/userIdDTO";
 import { authenticateAdmin } from "../middlewares/adminAuthMiddleware";
 import { authenticate } from "../middlewares/authMiddleware";
+import { PaginationDTO } from "../dtos/paginationDTO";
+import { validateQueryMiddleware } from "../middlewares/validateQueryMiddleware";
 
 const router = express.Router();
 
@@ -25,6 +27,19 @@ const router = express.Router();
  *     summary: Retorna todos os carrinhos
  *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Carrinhos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: offset
+ *         required: true
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: limit
+ *         required: true
+ *         schema:
+ *           type: number
  *     responses:
  *       200:
  *         description: Lista de carrinhos retornada com sucesso
@@ -37,10 +52,15 @@ const router = express.Router();
  *       204:
  *         description: Nenhum carrinho encontrado
  */
-router.get("/", authenticateAdmin, (req, res, next) => {
-  cartController.getAllCarts(req, res, next);
-  return;
-});
+router.get(
+  "/",
+  authenticateAdmin,
+  validateQueryMiddleware(PaginationDTO),
+  (req, res, next) => {
+    cartController.getAllCarts(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -49,6 +69,8 @@ router.get("/", authenticateAdmin, (req, res, next) => {
  *     summary: Busca um carrinho pelo ID
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Carrinhos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -91,6 +113,8 @@ router.get(
  *     summary: Busca o carrinho aberto de um usuário pelo seu ID
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Carrinhos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userId
@@ -141,6 +165,8 @@ router.get(
  *     summary: Fecha um carrinho
  *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Carrinhos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -182,6 +208,8 @@ router.put(
  *     summary: Deleta um carrinho
  *     description: Necessita de autenticação com privilégio de administrador.
  *     tags: [Carrinhos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -219,6 +247,8 @@ router.delete(
  *     summary: Adiciona produtos ao carrinho
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Carrinhos]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -299,6 +329,8 @@ router.put(
  *     summary: Remove produtos do carrinho
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Carrinhos]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:

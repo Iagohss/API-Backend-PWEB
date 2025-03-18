@@ -1,5 +1,12 @@
 export const swaggerSchemas = {
   components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
     schemas: {
       UserDTO: {
         type: "object",
@@ -92,45 +99,6 @@ export const swaggerSchemas = {
           material: "Algodão",
           tamanho: "M",
           preco: 49.99,
-        },
-      },
-      ProductFilterDTO: {
-        type: "object",
-        properties: {
-          nome: { type: "string", example: "Camiseta" },
-          cor: { type: "string", example: "Preto" },
-          tipo: { type: "string", example: "Camiseta" },
-          caimento: {
-            type: "string",
-            enum: [
-              "Fit",
-              "Slim",
-              "SlimFit",
-              "Regular",
-              "Oversized",
-              "Baggy",
-              "Reta",
-            ],
-            example: "Regular",
-          },
-          material: { type: "string", example: "Algodão" },
-          tamanho: {
-            type: "string",
-            enum: ["PP", "P", "M", "G", "GG"],
-            example: "M",
-          },
-          minPrice: { type: "number", example: 50.0 },
-          maxPrice: { type: "number", example: 150.0 },
-        },
-        example: {
-          nome: "Camiseta Básica",
-          cor: "Branca",
-          tipo: "Camiseta",
-          caimento: "Regular",
-          material: "Algodão",
-          tamanho: "M",
-          minPrice: 50,
-          maxPrice: 150,
         },
       },
       CartResponse: {

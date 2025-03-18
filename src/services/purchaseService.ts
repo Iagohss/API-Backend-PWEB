@@ -12,6 +12,8 @@ import PurchaseNotFoundError from "../errors/purchaseNotFoundError";
 import UserRepository from "../repositories/userRepository";
 import UserNotFoundError from "../errors/userNotFoundError";
 import CartConflictError from "../errors/cartConflictError";
+import { PaginationDTO } from "../dtos/paginationDTO";
+import { UserIdWithPaginationDTO } from "../dtos/userIdWithPaginationDTO";
 
 class PurchaseService {
   private purchaseRepository;
@@ -71,17 +73,27 @@ class PurchaseService {
     return purchase;
   }
 
-  async getPurchasesByUserId(userId: string) {
+  async getPurchasesByUserId(
+    userIdWithPaginationDTO: UserIdWithPaginationDTO,
+    userId: string
+  ) {
     const user = await this.userRepository.getUser(userId);
     if (!user) throw new UserNotFoundError();
 
-    const carts = await this.cartRepository.getOpenAllCartsByUser(userId);
+    const carts = await this.cartRepository.getAllCartsByUser(userId);
     const cartsIds = carts.map((cart) => cart.id);
-    return await this.purchaseRepository.getPurchaseByCartsIds(cartsIds);
+    return await this.purchaseRepository.getPurchaseByCartsIds(
+      userIdWithPaginationDTO.offset,
+      userIdWithPaginationDTO.limit,
+      cartsIds
+    );
   }
 
-  async getAllPurchases() {
-    return await this.purchaseRepository.getAllPurchases();
+  async getAllPurchases(paginationDTO: PaginationDTO) {
+    return await this.purchaseRepository.getAllPurchases(
+      paginationDTO.offset,
+      paginationDTO.limit
+    );
   }
 
   async deletePurchase(id: string) {

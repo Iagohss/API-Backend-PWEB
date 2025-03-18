@@ -1,4 +1,5 @@
 import { CartProductDTO } from "../dtos/cartProductDTO";
+import { PaginationDTO } from "../dtos/paginationDTO";
 import CartClosedError from "../errors/cartClosedError";
 import CartConflictError from "../errors/cartConflictError";
 import CartNotFoundError from "../errors/cartNotFoundError";
@@ -21,8 +22,11 @@ class CartService {
     this.productRepository = new ProductRepository();
   }
 
-  async getAllCarts(): Promise<Cart[]> {
-    return await this.cartRepository.getAllCarts();
+  async getAllCarts(paginationDTO: PaginationDTO): Promise<Cart[]> {
+    return await this.cartRepository.getAllCarts(
+      paginationDTO.offset,
+      paginationDTO.limit
+    );
   }
 
   async getCartById(id: string): Promise<Cart> {

@@ -19,9 +19,14 @@ class PurchaseRepository {
     }
   }
 
-  async getAllPurchases(): Promise<PurchaseResponse[]> {
+  async getAllPurchases(
+    offset: number,
+    limit: number
+  ): Promise<PurchaseResponse[]> {
     try {
       return await prisma.purchase.findMany({
+        skip: offset,
+        take: limit,
         include: {
           cart: {
             include: {
@@ -30,7 +35,7 @@ class PurchaseRepository {
                   id: true,
                   name: true,
                   email: true,
-                  admin: true
+                  admin: true,
                 },
               },
               cartProducts: {
@@ -59,7 +64,7 @@ class PurchaseRepository {
                   id: true,
                   name: true,
                   email: true,
-                  admin: true
+                  admin: true,
                 },
               },
               cartProducts: {
@@ -88,7 +93,7 @@ class PurchaseRepository {
                   id: true,
                   name: true,
                   email: true,
-                  admin: true
+                  admin: true,
                 },
               },
               cartProducts: {
@@ -105,9 +110,15 @@ class PurchaseRepository {
     }
   }
 
-  async getPurchaseByCartsIds(cartsIds: string[]): Promise<PurchaseResponse[]> {
+  async getPurchaseByCartsIds(
+    offset: number,
+    limit: number,
+    cartsIds: string[]
+  ): Promise<PurchaseResponse[]> {
     try {
       return await prisma.purchase.findMany({
+        skip: offset,
+        take: limit,
         where: {
           cartId: { in: cartsIds },
         },
