@@ -48,6 +48,22 @@ class UserController {
     }
   }
 
+  async getUserByEmail(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.params;
+      const user = await this.userService.getUserByEmail(email);
+
+      res.status(200).json(user);
+    } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        return res.status(404).json({ message: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
+      }
+    }
+  }
+
   async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
       const paginationDTO: PaginationDTO = req.query as unknown as PaginationDTO;

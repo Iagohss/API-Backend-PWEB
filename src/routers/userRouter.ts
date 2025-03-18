@@ -2,7 +2,12 @@ import express from "express";
 import UserController from "../controllers/userController";
 import { authenticateAdmin } from "../middlewares/adminAuthMiddleware";
 import { authenticate } from "../middlewares/authMiddleware";
+import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
+import { CreateUserDTO } from "../dtos/createUserDTO";
 import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
+import { GetIdDTO } from "../dtos/getIdDTO";
+import { UpdateUserDTO } from "../dtos/updateUserDTO";
+import { GetEmailDTO } from "../dtos/getEmailDTO";
 import { PaginationDTO } from "../dtos/paginationDTO";
 import { validateQueryMiddleware } from "../middlewares/validateQueryMiddleware";
 
@@ -53,7 +58,7 @@ export const router = express();
  *                 message:
  *                   type: string
  */
-router.post("/", (req, res, next) => {
+router.post("/", validateBodyMiddleware(CreateUserDTO), (req, res, next) => {
   UserController.createUser(req, res, next);
   return;
 });
@@ -91,10 +96,56 @@ router.post("/", (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.get("/:id", authenticate, (req, res, next) => {
-  UserController.getUser(req, res, next);
-  return;
-});
+router.get(
+  "/:id",
+  validateParamsMiddleware(GetIdDTO),
+  authenticate,
+  (req, res, next) => {
+    UserController.getUser(req, res, next);
+    return;
+  }
+);
+
+/**
+ * @swagger
+ * /api/users/email/{email}:
+ *   get:
+ *     summary: Busca um usuário pelo email
+ *     description: Necessita de autenticação (usuário logado).
+ *     tags: [Usuários]
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Email do usuário
+ *     responses:
+ *       200:
+ *         description: Usuário encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserResponse'
+ *       404:
+ *         description: Usuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+router.get(
+  "/email/:email",
+  validateParamsMiddleware(GetEmailDTO),
+  authenticate,
+  (req, res, next) => {
+    UserController.getUser(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -194,10 +245,16 @@ router.get(
  *                 message:
  *                   type: string
  */
-router.put("/:id", authenticate, (req, res, next) => {
-  UserController.updateUser(req, res, next);
-  return;
-});
+router.put(
+  "/:id",
+  authenticate,
+  validateParamsMiddleware(GetIdDTO),
+  validateBodyMiddleware(UpdateUserDTO),
+  (req, res, next) => {
+    UserController.updateUser(req, res, next);
+    return;
+  }
+);
 
 /**
  * @swagger
@@ -227,9 +284,14 @@ router.put("/:id", authenticate, (req, res, next) => {
  *                 message:
  *                   type: string
  */
-router.delete("/:id", authenticate, (req, res, next) => {
-  UserController.deleteUser(req, res, next);
-  return;
-});
+router.delete(
+  "/:id",
+  authenticate,
+  validateParamsMiddleware(GetIdDTO),
+  (req, res, next) => {
+    UserController.deleteUser(req, res, next);
+    return;
+  }
+);
 
 export default router;
