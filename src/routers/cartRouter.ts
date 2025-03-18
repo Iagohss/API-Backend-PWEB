@@ -2,7 +2,7 @@ import express from "express";
 import CartController from "../controllers/cartController";
 import cartController from "../controllers/cartController";
 import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
-import { GetIdDTO } from "../dtos/idDTO";
+import { IdDTO } from "../dtos/idDTO";
 import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
 import { CartProductDTO } from "../dtos/cartProductDTO";
 import { GetUserIdDTO } from "../dtos/userIdDTO";
@@ -99,7 +99,7 @@ router.get(
 router.get(
   "/:id",
   authenticate,
-  validateParamsMiddleware(GetIdDTO),
+  validateParamsMiddleware(IdDTO),
   (req, res, next) => {
     CartController.getCartById(req, res, next);
     return;
@@ -194,7 +194,7 @@ router.get(
 router.put(
   "/close/:id",
   authenticateAdmin,
-  validateParamsMiddleware(GetIdDTO),
+  validateParamsMiddleware(IdDTO),
   (req, res, next) => {
     CartController.closeCart(req, res, next);
     return;
@@ -233,7 +233,7 @@ router.put(
 router.delete(
   "/:id",
   authenticateAdmin,
-  validateParamsMiddleware(GetIdDTO),
+  validateParamsMiddleware(IdDTO),
   (req, res, next) => {
     CartController.deleteCart(req, res, next);
     return;

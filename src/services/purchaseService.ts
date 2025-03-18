@@ -13,7 +13,6 @@ import UserRepository from "../repositories/userRepository";
 import UserNotFoundError from "../errors/userNotFoundError";
 import CartConflictError from "../errors/cartConflictError";
 import { PaginationDTO } from "../dtos/paginationDTO";
-import { UserIdWithPaginationDTO } from "../dtos/userIdWithPaginationDTO";
 
 class PurchaseService {
   private purchaseRepository;
@@ -73,18 +72,15 @@ class PurchaseService {
     return purchase;
   }
 
-  async getPurchasesByUserId(
-    userIdWithPaginationDTO: UserIdWithPaginationDTO,
-    userId: string
-  ) {
+  async getPurchasesByUserId(paginationDTO: PaginationDTO, userId: string) {
     const user = await this.userRepository.getUser(userId);
     if (!user) throw new UserNotFoundError();
 
     const carts = await this.cartRepository.getAllCartsByUser(userId);
     const cartsIds = carts.map((cart) => cart.id);
     return await this.purchaseRepository.getPurchaseByCartsIds(
-      userIdWithPaginationDTO.offset,
-      userIdWithPaginationDTO.limit,
+      paginationDTO.offset,
+      paginationDTO.limit,
       cartsIds
     );
   }

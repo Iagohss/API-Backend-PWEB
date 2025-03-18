@@ -15,7 +15,7 @@ describe("Purchase Controller - Testes de Integração", () => {
 
     const adminUser = {
       name: "admin user",
-      email: `admin${Date.now()}@email.com`,
+      email: `admin@email.com`,
       password: "admin123",
       admin: true,
     };
@@ -83,20 +83,28 @@ describe("Purchase Controller - Testes de Integração", () => {
           },
         });
 
-        await axios.put(`${API_URL}/carts/product/add`, {
-          cartId: newCart.id,
-          productId: newProduct.id,
-          quantidade: 1,
-        }, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await axios.put(
+          `${API_URL}/carts/product/add`,
+          {
+            cartId: newCart.id,
+            productId: newProduct.id,
+            quantidade: 1,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-        const response = await axios.post(`${API_URL}/purchases`, {
-          cartId: newCart.id,
-          formaPagamento: "Cartão de Crédito",
-        }, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.post(
+          `${API_URL}/purchases`,
+          {
+            cartId: newCart.id,
+            formaPagamento: "Cartão de Crédito",
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         expect(response.status).toBe(201);
       } catch (error) {
@@ -126,7 +134,7 @@ describe("Purchase Controller - Testes de Integração", () => {
       await prisma.purchase.create({
         data: {
           cartId: newCart.id,
-          precoTotal: 100.00,
+          precoTotal: 100.0,
           formaPagamento: "Cartão de Crédito",
         },
       });
@@ -160,14 +168,17 @@ describe("Purchase Controller - Testes de Integração", () => {
       await prisma.purchase.create({
         data: {
           cartId: newCart.id,
-          precoTotal: 150.00,
+          precoTotal: 150.0,
           formaPagamento: "Pix",
         },
       });
 
-      const response = await axios.get(`${API_URL}/purchases/user/${newUser.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `${API_URL}/purchases/user/${newUser.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       expect([200, 204]).toContain(response.status);
     });
@@ -194,14 +205,17 @@ describe("Purchase Controller - Testes de Integração", () => {
       const newPurchase = await prisma.purchase.create({
         data: {
           cartId: newCart.id,
-          precoTotal: 150.00,
+          precoTotal: 150.0,
           formaPagamento: "Cartão de Crédito",
         },
       });
 
-      const response = await axios.delete(`${API_URL}/purchases/${newPurchase.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.delete(
+        `${API_URL}/purchases/${newPurchase.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       expect(response.status).toBe(204);
     });
