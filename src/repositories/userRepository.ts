@@ -50,15 +50,19 @@ class UserRepository {
 
   async updateUser(id: string, user: User): Promise<User> {
     try {
+      const filteredData = Object.fromEntries(
+        Object.entries({
+          name: user.name,
+          email: user.email,
+          password: user.password,
+        }).filter(([_, value]) => value !== undefined)
+      );
+
       return await prisma.user.update({
         where: {
           id: id,
         },
-        data: {
-          name: user.name,
-          email: user.email,
-          password: user.password,
-        },
+        data: filteredData,
       });
     } catch (error) {
       throw new InvalidInputError("Erro ao atualizar o usuário");

@@ -106,7 +106,7 @@ describe("Product Controller - Testes de Integração", () => {
         data: {
           name: "Usuário Comum",
           email: `user${Date.now()}@email.com`,
-          password: await hashPassword("123456"), // Senha criptografada
+          password: await hashPassword("123456"), 
           admin: false,
         },
       });
@@ -133,14 +133,13 @@ describe("Product Controller - Testes de Integração", () => {
           headers: { Authorization: `Bearer ${userToken}` },
         })
       ).rejects.toThrowError(
-        expect.objectContaining({ response: expect.objectContaining({ status: 403 }) }) // Código correto
+        expect.objectContaining({ response: expect.objectContaining({ status: 403 }) }) 
       );
     });
   });
 
   describe("POST /products/filter", () => {
     it("deve buscar produtos aplicando filtros corretamente", async () => {
-      // Criar produtos no banco para o filtro funcionar
       await prisma.product.createMany({
         data: [
           {
@@ -163,26 +162,23 @@ describe("Product Controller - Testes de Integração", () => {
           },
         ],
       });
-  
-      // Filtros válidos
+
       const validFilters = {
-        tipo: "Casual", // filtro por tipo
-        minPrice: 50, // Preço mínimo
-        maxPrice: 150, // Preço máximo
+        tipo: "Casual", 
+        minPrice: 50,
+        maxPrice: 150, 
       };
   
-      // Realiza o POST com filtros
       const response = await axios.post(
         `${API_URL}/products/filter`,
-        validFilters, // Passando os filtros no corpo da requisição
+        validFilters, 
         {
           headers: { "Content-Type": "application/json" },
         }
       );
-  
-      // Verifica se a resposta foi correta
+
       expect(response.status).toBe(200);
-      expect(response.data.length).toBeGreaterThan(0); // Espera que a lista de produtos filtrados tenha pelo menos 1 produto
+      expect(response.data.length).toBeGreaterThan(0); 
     });
   });    
 
