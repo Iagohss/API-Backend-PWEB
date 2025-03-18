@@ -14,11 +14,11 @@ Este projeto consiste no desenvolvimento de uma API backend para um sistema de l
 ## Tecnologias Utilizadas
 - **Linguagem de Programação:** TypeScript (Node.js)
 - **Framework:** Expresss
-- **Banco de Dados:** --
-- **Autenticação e Autorizção:** --
+- **Banco de Dados:** PostgresSQL, utilizando PRISMA como ORM
+- **Autenticação e Autorizção:** JWT
 - **Versionamento de Código:** Git e GitHub
-- **Testes:** --
-- **Documentação:** --
+- **Testes:** Jest
+- **Documentação:** Swagger
 
 ---
 
