@@ -5,11 +5,11 @@ import { authenticate } from "../middlewares/authMiddleware";
 import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
 import { CreateUserDTO } from "../dtos/createUserDTO";
 import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
-import { GetIdDTO } from "../dtos/getIdDTO";
 import { UpdateUserDTO } from "../dtos/updateUserDTO";
 import { GetEmailDTO } from "../dtos/getEmailDTO";
 import { PaginationDTO } from "../dtos/paginationDTO";
 import { validateQueryMiddleware } from "../middlewares/validateQueryMiddleware";
+import { IdDTO } from "../dtos/idDTO";
 
 export const router = express();
 
@@ -98,7 +98,7 @@ router.post("/", validateBodyMiddleware(CreateUserDTO), (req, res, next) => {
  */
 router.get(
   "/:id",
-  validateParamsMiddleware(GetIdDTO),
+  validateParamsMiddleware(IdDTO),
   authenticate,
   (req, res, next) => {
     UserController.getUser(req, res, next);
@@ -248,7 +248,7 @@ router.get(
 router.put(
   "/:id",
   authenticate,
-  validateParamsMiddleware(GetIdDTO),
+  validateParamsMiddleware(IdDTO),
   validateBodyMiddleware(UpdateUserDTO),
   (req, res, next) => {
     UserController.updateUser(req, res, next);
@@ -287,7 +287,7 @@ router.put(
 router.delete(
   "/:id",
   authenticate,
-  validateParamsMiddleware(GetIdDTO),
+  validateParamsMiddleware(IdDTO),
   (req, res, next) => {
     UserController.deleteUser(req, res, next);
     return;

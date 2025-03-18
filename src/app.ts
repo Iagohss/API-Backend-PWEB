@@ -4,6 +4,7 @@ import productRouter from "./routers/productRouter";
 import cartRouter from "./routers/cartRouter";
 import purchaseRouter from "./routers/purchaseRouter";
 import authRouter from "./routers/authRouter";
+import "reflect-metadata";
 
 const app = express();
 

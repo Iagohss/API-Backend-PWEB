@@ -15,7 +15,7 @@ describe("Cart Controller - Testes de Integração", () => {
 
     const adminUser = {
       name: "admin user",
-      email: `admin${Date.now()}@email.com`,
+      email: `admin@email.com`,
       password: "admin123",
       admin: true,
     };
@@ -108,13 +108,17 @@ describe("Cart Controller - Testes de Integração", () => {
         },
       });
 
-      const response = await axios.put(`${API_URL}/carts/product/add`, {
-        cartId: newCart.id,
-        productId: newProduct.id,
-        quantidade: 1,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.put(
+        `${API_URL}/carts/product/add`,
+        {
+          cartId: newCart.id,
+          productId: newProduct.id,
+          quantidade: 1,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       expect(response.status).toBe(200);
     });
@@ -176,13 +180,17 @@ describe("Cart Controller - Testes de Integração", () => {
         },
       });
 
-      await axios.put(`${API_URL}/carts/product/add`, {
-        cartId: newCart.id,
-        productId: newProduct.id,
-        quantidade: 1,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        `${API_URL}/carts/product/add`,
+        {
+          cartId: newCart.id,
+          productId: newProduct.id,
+          quantidade: 1,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       const response = await axios.delete(`${API_URL}/carts/product/rmv`, {
         data: { cartId: newCart.id, productId: newProduct.id, quantidade: 1 },
@@ -202,7 +210,9 @@ describe("Cart Controller - Testes de Integração", () => {
           quantidade: 1,
         })
       ).rejects.toThrowError(
-        expect.objectContaining({ response: expect.objectContaining({ status: 401 }) })
+        expect.objectContaining({
+          response: expect.objectContaining({ status: 401 }),
+        })
       );
     });
   });
@@ -243,20 +253,20 @@ describe("Cart Controller - Testes de Integração", () => {
           admin: false,
         },
       });
-  
+
       const newCart = await prisma.cart.create({
         data: {
-          userId: newUser.id, 
+          userId: newUser.id,
           isOpen: true,
         },
       });
-  
+
       const response = await axios.get(`${API_URL}/carts/${newCart.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+
       expect(response.status).toBe(200);
       expect(response.data.id).toBe(newCart.id);
     });
-  });  
+  });
 });

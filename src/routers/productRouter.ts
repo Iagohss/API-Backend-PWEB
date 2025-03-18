@@ -3,7 +3,7 @@ import ProductController from "../controllers/productController";
 import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
 import { CreateProductDTO } from "../dtos/createProductDTO";
 import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
-import { GetIdDTO } from "../dtos/idDTO";
+import { IdDTO } from "../dtos/idDTO";
 import { ProductFilterDTO } from "../dtos/productFilterDTO";
 import { UpdateProductDTO } from "../dtos/updateProductDTO";
 import { authenticateAdmin } from "../middlewares/adminAuthMiddleware";
@@ -247,7 +247,7 @@ router.get(
  *                 message:
  *                   type: string
  */
-router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
+router.get("/:id", validateParamsMiddleware(IdDTO), (req, res, next) => {
   ProductController.getProductById(req, res, next);
   return;
 });
@@ -302,7 +302,7 @@ router.get("/:id", validateParamsMiddleware(GetIdDTO), (req, res, next) => {
 router.put(
   "/:id",
   authenticateAdmin,
-  validateParamsMiddleware(GetIdDTO),
+  validateParamsMiddleware(IdDTO),
   validateBodyMiddleware(UpdateProductDTO),
   (req, res, next) => {
     ProductController.updateProduct(req, res, next);
@@ -341,7 +341,7 @@ router.put(
 router.delete(
   "/:id",
   authenticateAdmin,
-  validateParamsMiddleware(GetIdDTO),
+  validateParamsMiddleware(IdDTO),
   (req, res, next) => {
     ProductController.deleteProduct(req, res, next);
     return;

@@ -16,12 +16,12 @@ describe("Product Controller - Testes de Integração", () => {
 
     const adminUser = {
       name: "admin user",
-      email: `admin${Date.now()}@email.com`,
+      email: `admin@email.com`,
       password: "admin123",
       admin: true,
     };
 
-    await prisma.cart.deleteMany(); 
+    await prisma.cart.deleteMany();
     await prisma.product.deleteMany();
     await prisma.user.deleteMany();
 
@@ -44,9 +44,9 @@ describe("Product Controller - Testes de Integração", () => {
   }, 20000);
 
   beforeEach(async () => {
-    await prisma.cart.deleteMany(); 
+    await prisma.cart.deleteMany();
     await prisma.product.deleteMany();
-    await prisma.user.deleteMany(); 
+    await prisma.user.deleteMany();
   });
 
   afterAll(async () => {
@@ -106,7 +106,7 @@ describe("Product Controller - Testes de Integração", () => {
         data: {
           name: "Usuário Comum",
           email: `user${Date.now()}@email.com`,
-          password: await hashPassword("123456"), 
+          password: await hashPassword("123456"),
           admin: false,
         },
       });
@@ -133,7 +133,9 @@ describe("Product Controller - Testes de Integração", () => {
           headers: { Authorization: `Bearer ${userToken}` },
         })
       ).rejects.toThrowError(
-        expect.objectContaining({ response: expect.objectContaining({ status: 403 }) }) 
+        expect.objectContaining({
+          response: expect.objectContaining({ status: 403 }),
+        })
       );
     });
   });
@@ -164,23 +166,20 @@ describe("Product Controller - Testes de Integração", () => {
       });
 
       const validFilters = {
-        tipo: "Casual", 
+        tipo: "Casual",
         minPrice: 50,
-        maxPrice: 150, 
+        maxPrice: 150,
       };
-  
-      const response = await axios.post(
-        `${API_URL}/products/filter`,
-        validFilters, 
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+
+      const queryParams = new URLSearchParams(validFilters as any).toString();
+      const response = await axios.get(
+        `${API_URL}/products/filter?${queryParams}`
       );
 
       expect(response.status).toBe(200);
-      expect(response.data.length).toBeGreaterThan(0); 
+      expect(response.data.length).toBeGreaterThan(0);
     });
-  });    
+  });
 
   describe("PUT /products/:id", () => {
     it("deve atualizar um produto existente", async () => {
@@ -198,9 +197,13 @@ describe("Product Controller - Testes de Integração", () => {
 
       const updatedProduct = { preco: 199.99 };
 
-      const response = await axios.put(`${API_URL}/products/${product.id}`, updatedProduct, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.put(
+        `${API_URL}/products/${product.id}`,
+        updatedProduct,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       expect(response.status).toBe(200);
       expect(response.data.preco).toBe(updatedProduct.preco);

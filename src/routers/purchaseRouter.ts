@@ -2,7 +2,7 @@ import express from "express";
 import PurchaseController from "../controllers/purchaseController";
 import { validateBodyMiddleware } from "../middlewares/validateBodyMiddleware";
 import { PurchaseDTO } from "../dtos/purchaseDTO";
-import { GetIdDTO } from "../dtos/idDTO";
+import { IdDTO } from "../dtos/idDTO";
 import { validateParamsMiddleware } from "../middlewares/validateParamsMiddleware";
 import { authenticate } from "../middlewares/authMiddleware";
 import { GetUserIdDTO } from "../dtos/userIdDTO";
@@ -111,7 +111,7 @@ router.post(
 router.get(
   "/",
   authenticateAdmin,
-  validateParamsMiddleware(PaginationDTO),
+  validateQueryMiddleware(PaginationDTO),
   (req, res, next) => {
     PurchaseController.getAllPurchases(req, res, next);
   }
@@ -149,7 +149,7 @@ router.get(
 router.get(
   "/:id",
   authenticate,
-  validateParamsMiddleware(GetIdDTO),
+  validateParamsMiddleware(IdDTO),
   (req, res, next) => {
     PurchaseController.getPurchaseById(req, res, next);
   }
@@ -236,7 +236,7 @@ router.get(
 router.delete(
   "/:id",
   authenticateAdmin,
-  validateParamsMiddleware(GetIdDTO),
+  validateParamsMiddleware(IdDTO),
   (req, res, next) => {
     PurchaseController.deletePurchase(req, res, next);
   }
