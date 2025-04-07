@@ -47,6 +47,7 @@ class UserService {
   }
 
   async getUserByEmail(email: string): Promise<User> {
+    console.log(email);
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) throw new userNotFoundError();
     return user;

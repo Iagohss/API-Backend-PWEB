@@ -66,7 +66,8 @@ class UserController {
 
   async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const paginationDTO: PaginationDTO = req.query as unknown as PaginationDTO;
+      const paginationDTO: PaginationDTO =
+        req.query as unknown as PaginationDTO;
       const users = await this.userService.getAllUsers(paginationDTO);
       if (users.length === 0) {
         return res.status(204).send();

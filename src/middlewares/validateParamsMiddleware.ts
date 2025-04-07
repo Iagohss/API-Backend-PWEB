@@ -22,7 +22,6 @@ export function validateParamsMiddleware(dtoClass: any) {
       });
       return;
     }
-
     req.params = dtoInstance;
     next();
   };
