@@ -113,6 +113,8 @@ router.get(
  *     summary: Busca um usuário pelo email
  *     description: Necessita de autenticação (usuário logado).
  *     tags: [Usuários]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: email
@@ -142,7 +144,7 @@ router.get(
   validateParamsMiddleware(GetEmailDTO),
   authenticate,
   (req, res, next) => {
-    UserController.getUser(req, res, next);
+    UserController.getUserByEmail(req, res, next);
     return;
   }
 );

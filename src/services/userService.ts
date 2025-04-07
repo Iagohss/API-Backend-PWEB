@@ -72,7 +72,10 @@ class UserService {
       updatedFields.email = data.email;
     }
 
-    if (data.password) updatedFields.password = data.password;
+    if (data.password) {
+      const hashedPassowrd = await hashPassword(data.password);
+      updatedFields.password = hashedPassowrd;
+    }
     if (data.admin) updatedFields.admin = data.admin;
 
     if (Object.keys(updatedFields).length === 0)
