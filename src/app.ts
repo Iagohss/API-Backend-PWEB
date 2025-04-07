@@ -5,9 +5,11 @@ import cartRouter from "./routers/cartRouter";
 import purchaseRouter from "./routers/purchaseRouter";
 import authRouter from "./routers/authRouter";
 import "reflect-metadata";
+import cors from "cors";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
