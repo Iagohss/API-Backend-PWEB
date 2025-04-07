@@ -47,7 +47,6 @@ class UserService {
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    console.log(email);
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) throw new userNotFoundError();
     return user;
@@ -73,7 +72,10 @@ class UserService {
       updatedFields.email = data.email;
     }
 
-    if (data.password) updatedFields.password = data.password;
+    if (data.password) {
+      const hashedPassowrd = await hashPassword(data.password);
+      updatedFields.password = hashedPassowrd;
+    }
     if (data.admin) updatedFields.admin = data.admin;
 
     if (Object.keys(updatedFields).length === 0)
