@@ -92,6 +92,7 @@ class CartRepository {
         where: { id },
       });
     } catch (error) {
+      console.error(error);
       throw new InvalidInputError("Erro ao deletar o carrinho.");
     }
   }
