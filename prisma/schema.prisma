@@ -57,7 +57,7 @@ model Cart {
   userId String
   isOpen Boolean @default(true)
 
-  user         User          @relation(fields: [userId], references: [id])
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   cartProducts CartProduct[]
   purchase     Purchase?     @relation()
 }
@@ -80,5 +80,5 @@ model Purchase {
   formaPagamento String
   data           DateTime @default(now())
 
-  cart Cart @relation(fields: [cartId], references: [id])
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
 }
